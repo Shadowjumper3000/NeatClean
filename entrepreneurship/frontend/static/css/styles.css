@@ -1,0 +1,148 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header, footer {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+    position: relative;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.banner-container {
+    flex: 0 0 auto;
+}
+
+.banner {
+    height: 100px; /* Adjust the height as needed */
+    width: auto;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+nav ul li {
+    display: inline;
+    margin-left: 10px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+h1, h2 {
+    color: #4CAF50; /* Green */
+}
+
+button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #45a049; /* Darker green */
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"], input[type="password"], input[type="date"], input[type="time"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+main {
+    flex: 1;
+    padding: 1em;
+}
+
+footer {
+    text-align: center;
+    padding: 1em 0;
+    margin-top: auto;
+}
+
+footer p {
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 100px); /* Adjust height to account for header and footer */
+}
+
+.sidebar {
+    width: 25%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+    width: 75%;
+    padding: 20px;
+}
+
+#calendar-container {
+    margin-top: 20px;
+}
+
+#time-container {
+    margin-top: 20px;
+}
+
+#request-booking-button {
+    margin-top: 20px;
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#request-booking-button:hover {
+    background-color: #45a049; /* Darker green */
+}

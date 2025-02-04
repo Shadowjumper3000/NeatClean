@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Entrepreneurship{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" href="{% static 'img/logo.webp' %}" type="image/webp"> <!-- Add this line for favicon -->
+    <script src="{% static 'auth.js' %}" defer></script>
+    <script src="{% static 'calendar.js' %}" defer></script>
+</head>
+<body>
+    <header>
+        <div class="banner-container">
+            <img src="{% static 'img/banner.png' %}" alt="Banner" class="banner">
+        </div>
+        <h1>Welcome to the Entrepreneurship Project</h1>
+        <nav>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'bookings' %}">Bookings</a></li> <!-- Show Bookings tab only when logged in -->
+                    <li><a href="{% url 'account' %}">Account</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+                <li><a href="{% url 'index' %}">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2025 Entrepreneurship Project</p>
+    </footer>
+</body>
+</html>

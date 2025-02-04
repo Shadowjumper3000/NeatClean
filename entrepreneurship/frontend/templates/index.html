@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Home - Entrepreneurship{% endblock %}
+
+{% block content %}
+<div class="container">
+    <aside class="sidebar">
+        <h3>Premium</h3>
+        <p>Upgrade to premium for additional benefits.</p>
+        <h3>More Info</h3>
+        <p>Learn more about our services.</p>
+        <h3>Placeholder</h3>
+        <p>Additional content can go here.</p>
+    </aside>
+    <div class="main-content">
+        <h2>Cleaning Service Date Picker</h2>
+        <p>Select a date and time for your cleaning service.</p>
+        <div id="calendar-container">
+            <input type="date" id="date-picker">
+        </div>
+        <div id="time-container">
+            <label for="time-picker">Select Time:</label>
+            <input type="time" id="time-picker">
+        </div>
+        <button id="check-availability-button">Check Availability</button>
+    </div>
+</div>
+{% endblock %}
