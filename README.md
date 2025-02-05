@@ -24,3 +24,13 @@ To set up a Python virtual environment and install the required packages from `r
     pip install -r requirements.txt
     ```
 
+4. **Create MySQL database**:
+    - Create a MySQL database named `entrepreneurship`:
+        ```sql
+        CREATE DATABASE entrepreneurship;
+        ```
+
+5. **Run migrations**:
+    ```sh
+    python manage.py migrate
+    ```
