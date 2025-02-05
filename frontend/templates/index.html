@@ -17,14 +17,20 @@
     <div class="main-content">
         <h2>Cleaning Service Date Picker</h2>
         <p>Select a date and time for your cleaning service.</p>
-        <div id="calendar-container">
-            <input type="date" id="date-picker">
-        </div>
-        <div id="time-container">
-            <label for="time-picker">Select Time:</label>
-            <input type="time" id="time-picker">
-        </div>
-        <button id="check-availability-button">Check Availability</button>
+        <form id="availability-form">
+            <div id="calendar-container">
+                <input type="date" id="date-picker">
+            </div>
+            <div id="time-container">
+                <label for="time-picker">Select Time:</label>
+                <input type="time" id="time-picker">
+            </div>
+            <button type="button" class="btn btn-primary" id="check-availability-button">
+                Check Availability
+            </button>
+        </form>
     </div>
 </div>
+
+<script src="{% static 'src/calendar.js' %}"></script>
 {% endblock %}
