@@ -30,7 +30,20 @@ To set up a Python virtual environment and install the required packages from `r
         CREATE DATABASE entrepreneurship;
         ```
 
-5. **Run migrations**:
+5. **Create .env file**:
+    - Create a `.env` file in the root directory of the project.
+    - Add the following environment variables to the `.env` file:
+        ```env
+        SECRET_KEY=your_secret_key
+        DEBUG=True
+        DB_NAME=entrepreneurship
+        DB_USER=your_mysql_username
+        DB_PASSWORD=your_mysql_password
+        DB_HOST=localhost
+        DB_PORT=3306
+        ```
+
+6. **Run migrations**:
     ```sh
     python manage.py migrate
     ```
