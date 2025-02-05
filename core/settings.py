@@ -137,7 +137,7 @@ STATIC_URL = '/static/'
 # Add this setting for static files
 STATICFILES_DIRS = [
     BASE_DIR / 'frontend' / 'static',
-    BASE_DIR / 'frontend' / 'src',  # Add this line
+    BASE_DIR / 'frontend' / 'src',
 ]
 
 # Default primary key field type

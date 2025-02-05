@@ -2,8 +2,6 @@
 
 ## Setup Instructions
 
-To set up a Python virtual environment and install the required packages from `requirements.txt`, follow these steps:
-
 1. **Create a virtual environment**:
     ```sh
     python -m venv .venv

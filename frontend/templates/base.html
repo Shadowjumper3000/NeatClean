@@ -6,9 +6,8 @@
     <title>{% block title %}Entrepreneurship{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="icon" href="{% static 'img/logo.webp' %}" type="image/webp"> <!-- Add this line for favicon -->
+    <link rel="icon" href="{% static 'img/logo.webp' %}" type="image/webp">
     <script src="{% static 'auth.js' %}" defer></script>
-    <script src="{% static 'calendar.js' %}" defer></script>
 </head>
 <body>
     <header>
@@ -19,7 +18,7 @@
         <nav>
             <ul>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'bookings' %}">Bookings</a></li> <!-- Show Bookings tab only when logged in -->
+                    <li><a href="{% url 'bookings' %}">Bookings</a></li>
                     <li><a href="{% url 'account' %}">Account</a></li>
                 {% else %}
                     <li><a href="{% url 'login' %}">Login</a></li>

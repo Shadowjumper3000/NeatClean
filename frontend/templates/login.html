@@ -1,11 +1,11 @@
-<!-- entrepreneurship/frontend/templates/login.html -->
+<!-- frontend/templates/login.html -->
 {% extends "base.html" %}
 
 {% block title %}Login - Entrepreneurship{% endblock %}
 
 {% block content %}
 <h2>Login</h2>
-<form method="post">
+<form id="login-form" method="post">
     {% csrf_token %}
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
@@ -18,4 +18,9 @@
         <p style="color: red;">{{ error }}</p>
     {% endif %}
 </form>
+
+<p id="toggle-link">
+    Don't have an account? <a href="{% url 'register' %}">Create Account</a>
+</p>
+
 {% endblock %}
