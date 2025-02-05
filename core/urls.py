@@ -19,7 +19,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from .views import index, login_view, register_view, account, bookings
+from .views import index, login_view, register_view, account, bookings, staff_list
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -28,4 +28,5 @@ urlpatterns = [
     path("register/", register_view, name="register"),
     path("account/", account, name="account"),
     path("bookings/", bookings, name="bookings"),
+    path("staff-list/", staff_list, name="staff_list"),
 ]

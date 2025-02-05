@@ -7,6 +7,14 @@ from django.contrib.auth.forms import UserCreationForm
 def index(request):
     return render(request, "index.html")
 
+def staff_list(request):
+    date = request.GET.get('date')
+    time = request.GET.get('time')
+    context = {
+        'date': date,
+        'time': time,
+    }
+    return render(request,"staffList.html", context)
 
 def login_view(request):
     if request.method == "POST":
