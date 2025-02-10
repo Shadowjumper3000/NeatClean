@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.templatetags.static import static
+
 
 
 def index(request):
@@ -9,9 +11,16 @@ def index(request):
 def staff_list(request):
     date = request.GET.get('date')
     time = request.GET.get('time')
+    #ex staff
+    staff_list = [
+        {'name': 'John Doe', 'image_url': static('img/image1.jpeg'), 'rating': 4.5},
+        {'name': 'Jane Smith', 'image_url': 'path/to/image2.jpg', 'rating': 4.7},
+    ]
+
     context = {
         'date': date,
         'time': time,
+        'staff_list': staff_list,
     }
     return render(request,"staffList.html", context)
 

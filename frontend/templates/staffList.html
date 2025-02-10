@@ -5,5 +5,19 @@
 {% block content %}
 <h2>Staff List</h2>
 <p>Here is the list of available staff.</p>
-<!-- Add your staff list content here -->
+<div class = "staff-grid">
+    {% for staff in staff_list %}
+    <div class="card">
+        <img src="{{ staff.image_url }}" alt="{{ staff.name }}" class="card-image">
+        <div class="card-text">
+            <h2>{{ staff.name }}</h2>     
+            <div class="desc">Rating: {{ staff.rating }}</div>
+    
+            <div class="actions">
+                 <button><i>Book cleaning</i></button>
+            </div>
+        </div> 
+      </div>
+    {% endfor %}
+</div>
 {% endblock %}
