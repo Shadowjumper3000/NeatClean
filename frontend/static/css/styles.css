@@ -52,11 +52,11 @@ nav ul li a {
 }
 
 h1, h2 {
-    color: #4CAF50; /* Green */
+    color: #cadfe4; /* Green */
 }
 
 button {
-    background-color: #4CAF50; /* Green */
+    background-color: #cadfe4; /* Green */
     color: white;
     border: none;
     padding: 10px 20px;

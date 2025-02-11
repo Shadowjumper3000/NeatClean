@@ -21,7 +21,7 @@ class Customer(models.Model):
     surname = models.CharField(max_length=45, null=True, blank=True)
     name = models.CharField(max_length=45, null=True, blank=True)
     email = models.EmailField(max_length=45, null=True, blank=True)
-    password = models.CharField(max_length=45,null=True,blank = True)
+    password = models.CharField(max_length=45, null=True, blank=True)
     phone_number = models.IntegerField(null=True, blank=True)
     language = models.ForeignKey(
         Language, on_delete=models.CASCADE, null=True, blank=True

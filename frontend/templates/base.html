@@ -6,7 +6,7 @@
     <title>{% block title %}Entrepreneurship{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link rel="icon" href="{% static 'img/logo.webp' %}" type="image/webp"> <!-- Add this line for favicon -->
+    <link rel="icon" href="{% static 'img/banner.png' %}" type="image/webp"> <!-- Add this line for favicon -->
     <script src="{% static 'auth.js' %}" defer></script>
     <script src="{% static 'calendar.js' %}" defer></script>
 </head>
@@ -15,7 +15,7 @@
         <div class="banner-container">
             <img src="{% static 'img/banner.png' %}" alt="Banner" class="banner">
         </div>
-        <h1>Welcome to the Entrepreneurship Project</h1>
+        <h1>Neatify</h1>
         <nav>
             <ul>
                 {% if user.is_authenticated %}
