@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Staff List - Entrepreneurship{% endblock %}
 
@@ -14,10 +15,13 @@
             <div class="desc">Rating: {{ staff.rating }}</div>
             <div class="lang">Language: {{ staff.language }}</div>
             <div class="actions">
-                 <button><i>Book cleaning</i></button>
+                 <button type="button" onclick="bookCleaner('{{ staff.id }}', '{{ staff.surname }} {{ staff.name }}')">Book cleaning</button>
             </div>
         </div> 
       </div>
     {% endfor %}
+    <input type="hidden" id="date" value="{{ date }}">
+    <input type="hidden" id="time" value="{{ time }}">
+    <script src="{% static 'src/booking.js' %}"></script>
 </div>
 {% endblock %}
