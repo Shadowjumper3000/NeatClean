@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from database.models import Staff, Zipcode, Language, Customer
 from django.contrib.auth.models import User
@@ -12,9 +12,7 @@ def index(request):
 def staff_list(request):
     date = request.GET.get("date")
     time = request.GET.get("time")
-    # ex staff
     staff_list = Staff.objects.all()
-
     context = {
         "date": date,
         "time": time,
@@ -107,10 +105,20 @@ def register_view(request):
 
 
 @login_required
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)
+        response = redirect("index")
+        response.delete_cookie("auth")  # Delete the auth cookie
+        return response
+    return redirect("index")
+
+
+@login_required
 def account(request):
     return render(request, "account.html", {"user": request.user})
 
 
 @login_required
-def bookings(request):  # Add this view for bookings
+def bookings(request):
     return render(request, "bookings.html")
