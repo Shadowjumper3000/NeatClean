@@ -11,17 +11,16 @@
     <div class="card">
         <img src="{{ staff.image_url }}" alt="{{ staff.name }}" class="card-image">
         <div class="card-text">
-            <h2>{{ staff.surname }} {{ staff.name }}</h2>     
+            <h2>{{ staff.surname }} {{ staff.name }}</h2>
             <div class="desc">Rating: {{ staff.rating }}</div>
             <div class="lang">Language: {{ staff.language }}</div>
             <div class="actions">
                  <button type="button" onclick="bookCleaner('{{ staff.id }}', '{{ staff.surname }} {{ staff.name }}')">Book cleaning</button>
             </div>
-        </div> 
+        </div>
       </div>
     {% endfor %}
     <input type="hidden" id="date" value="{{ date }}">
     <input type="hidden" id="time" value="{{ time }}">
-    <script src="{% static 'src/booking.js' %}"></script>
 </div>
 {% endblock %}

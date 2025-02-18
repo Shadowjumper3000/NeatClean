@@ -9,6 +9,7 @@ def index(request):
     return render(request, "index.html")
 
 
+@login_required
 def staff_list(request):
     date = request.GET.get("date")
     time = request.GET.get("time")
@@ -116,9 +117,13 @@ def logout_view(request):
 
 @login_required
 def account(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
     return render(request, "account.html", {"user": request.user})
 
 
 @login_required
 def bookings(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
     return render(request, "bookings.html")
