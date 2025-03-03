@@ -4,6 +4,13 @@
 
 To set up a Python virtual environment and install the required packages from `requirements.txt`, follow these steps:
 
+1. **Open the project in WSL**:
+    - Open your WSL terminal.
+    - Navigate to the project directory:
+        ```sh
+        cd /mnt/c/Users/DAHoe/OneDrive\ -\ IE\ University/Programming/Entrepreneurship
+        ```
+
 1. **Create a virtual environment**:
     ```sh
     python -m venv .venv
