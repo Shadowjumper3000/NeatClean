@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from database.models import Zipcode, Language, Staff, Profile
+from database.models import Zipcode, Language, Profile
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.db import IntegrityError
@@ -15,7 +15,7 @@ def index(request):
 def staff_list(request):
     date = request.GET.get("date")
     time = request.GET.get("time")
-    staff_list = Staff.objects.all()
+    staff_list = Profile.objects.all()
     context = {
         "date": date,
         "time": time,
