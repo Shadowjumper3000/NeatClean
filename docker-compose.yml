@@ -8,10 +8,11 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DEBUG=True
-      - DB_NAME=entrepreneurship
+      - DB_NAME=neatclean
       - DB_USER=django_user
       - DB_PASSWORD=password
       - DB_HOST=db
@@ -25,7 +26,7 @@ services:
   db:
     image: mysql:8.0
     environment:
-      - MYSQL_DATABASE=entrepreneurship
+      - MYSQL_DATABASE=neatclean
       - MYSQL_USER=django_user
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=rootpassword
@@ -34,7 +35,10 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
 
 volumes:
   mysql_data:
-    name: entrepreneurship_mysql_data
