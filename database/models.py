@@ -1,35 +1,36 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-
-class Language(models.Model):
-    language = models.CharField(max_length=45)
-
-    def __str__(self):
-        return self.language
-
-
-class Zipcode(models.Model):
-    zipcode = models.CharField(max_length=45)
-
-    def __str__(self):
-        return self.zipcode
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_staff = models.BooleanField(default=False)
-    city = models.CharField(max_length=100, null=True, blank=True)
-    zip = models.CharField(max_length=10, null=True, blank=True)
-    street = models.CharField(max_length=100, null=True, blank=True)
-    address = models.CharField(max_length=100, null=True, blank=True)
-    apartment_door_floor = models.CharField(max_length=100, null=True, blank=True)
-    phone_number = models.CharField(max_length=15, null=True, blank=True)
-    language = models.ForeignKey(
-        Language, on_delete=models.CASCADE, null=True, blank=True
+    # Link the Profile to the Django User model
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+
+    # Additional fields
+    name = models.CharField(max_length=100, blank=True, null=True, help_text="User's first name")
+    surname = models.CharField(max_length=100, blank=True, null=True, help_text="User's last name")
+    email = models.EmailField(max_length=100, blank=True, null=True, help_text="User's email address")
+    phone = models.CharField(max_length=15, blank=True, null=True, help_text="User's phone number")
+    address = models.CharField(max_length=255, blank=True, null=True, help_text="User's address")
+    picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True, help_text="User's profile picture")
+    user_type = models.CharField(
+        max_length=20,
+        choices=[('customer', 'Customer'), ('staff', 'Staff')],
+        default='customer',
+        help_text="Type of user (e.g., Customer or Staff)"
     )
-    rating = models.IntegerField(null=True, blank=True)
-    image_url = models.URLField(max_length=200, null=True, blank=True)
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username}'s Profile"
+
+    class Meta:
+        verbose_name = "Profile"
+        verbose_name_plural = "Profiles"
+
+# Signal to create or update the Profile when a User is created or updated
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    instance.profile.save()
