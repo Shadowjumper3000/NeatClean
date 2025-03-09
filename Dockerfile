@@ -21,10 +21,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Create necessary directories
+# Create necessary directories with proper permissions
 RUN useradd -m appuser && \
     mkdir -p /app/staticfiles /app/media && \
-    chown -R appuser:appuser /app
+    chown -R appuser:appuser /app && \
+    chmod -R 755 /app/staticfiles /app/media
 
 # Install Python dependencies
 COPY requirements.txt .
@@ -42,23 +43,27 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 EXPOSE 8000
 
-# Combined initialization and startup command
-CMD set -e; \
-    echo "Waiting for database..."; \
-    until nc -z -v -w30 db 3306; do \
-        echo "Waiting for database connection..."; \
-        sleep 5; \
-    done; \
-    echo "Running migrations..."; \
-    python manage.py migrate --noinput; \
-    echo "Collecting static files..."; \
-    python manage.py collectstatic --noinput; \
-    echo "Starting Gunicorn..."; \
-    exec gunicorn \
-        --bind 0.0.0.0:8000 \
-        core.wsgi:application \
-        --workers 3 \
-        --timeout 120 \
-        --keep-alive 5 \
-        --max-requests 1000 \
-        --max-requests-jitter 50
+# Create entrypoint script
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Waiting for database...";\n\
+until nc -z -v -w30 $DB_HOST $DB_PORT; do\n\
+    echo "Waiting for database connection...";\n\
+    sleep 5;\n\
+done;\n\
+echo "Running migrations...";\n\
+python manage.py migrate --noinput;\n\
+echo "Collecting static files...";\n\
+python manage.py collectstatic --noinput --clear;\n\
+echo "Starting Gunicorn...";\n\
+exec gunicorn core.wsgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers 3 \
+    --timeout 120 \
+    --keep-alive 5 \
+    --max-requests 1000 \
+    --max-requests-jitter 50' > /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/app/entrypoint.sh"]

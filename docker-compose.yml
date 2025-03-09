@@ -48,9 +48,10 @@ services:
       - DB_HOST=db
       - DB_PORT=3306
       - DJANGO_ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - STATIC_ROOT=/app/staticfiles
     volumes:
-      - media_files:/app/media
-      - static_files:/app/staticfiles
+      - media_files:/app/media:rw
+      - static_files:/app/staticfiles:rw
     networks:
       - network
     depends_on:
