@@ -25,9 +25,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
-# Create non-root user
+# Create necessary directories
 RUN useradd -m appuser && \
-    mkdir -p /app/static /app/media && \
+    mkdir -p /app/staticfiles /app/media && \
     chown -R appuser:appuser /app
 
 # Copy application code

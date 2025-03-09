@@ -50,6 +50,7 @@ services:
       - DJANGO_ALLOWED_HOSTS=${ALLOWED_HOSTS}
     volumes:
       - media_files:/app/media
+      - static_files:/app/staticfiles
     networks:
       - network
     depends_on:
@@ -73,7 +74,7 @@ services:
         max-size: "10m"
         max-file: "3"
     ports:
-      - "8000:8000" # Map container port 8000 to host port 8000
+      - "8000:8000"
 
 networks:
   network:
@@ -83,4 +84,6 @@ volumes:
   mysql_data:
     driver: local
   media_files:
+    driver: local
+  static_files:
     driver: local
