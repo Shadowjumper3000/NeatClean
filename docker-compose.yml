@@ -13,21 +13,32 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - media_files:/app/media # Add this volume for media files
+      - media_files:/app/media
+    networks:
+      - neatclean_network
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   web:
+    image: ${DOCKER_REGISTRY:-ghcr.io}/${GITHUB_REPOSITORY:-yourusername/neatclean}:${TAG:-latest}
     build:
       context: .
       dockerfile: Dockerfile
-      tags: neatclean:prod
+      args:
+        - BUILDKIT_INLINE_CACHE=1
     restart: always
-    ports:
-      - "${PORT:-8000}:8000"
     environment:
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY}
@@ -38,12 +49,36 @@ services:
       - DB_PORT=3306
       - DJANGO_ALLOWED_HOSTS=${ALLOWED_HOSTS}
     volumes:
-      - .:/app
-      - media_files:/app/media # Share the same volume with db container
+      - media_files:/app/media
+    networks:
+      - neatclean_network
     depends_on:
       db:
         condition: service_healthy
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  neatclean_network:
+    driver: bridge
 
 volumes:
   mysql_data:
-  media_files: # Define the new volume
+    driver: local
+  media_files:
+    driver: local
