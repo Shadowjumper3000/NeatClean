@@ -19,8 +19,27 @@
         <nav>
             <ul>
                 {% if user.is_authenticated %}
+<<<<<<< Updated upstream
                     <li><a href="{% url 'bookings' %}">Bookings</a></li> <!-- Show Bookings tab only when logged in -->
                     <li><a href="{% url 'account' %}">Account</a></li>
+=======
+                    <li class="profile-container">
+                        <a href="{% url 'account' %}" class="profile-link">
+                            <div style="display: flex; align-items: center;">
+                                <span>{{ user.username }}</span>
+                                {% if user.picture %}
+                                    <div style="display: flex; align-items: center; max-width: 50px; border-radius: 50%; overflow: hidden; margin-left: 10px;">
+                                        <img src="{{ user.picture.url }}" alt="Account" class="profile-pic" style="width: 100%; display: inline-block; vertical-align: middle;">
+                                    </div>
+                                {% else %}
+                                    <div style="display: flex; align-items: center; max-width: 50px; border-radius: 50%; overflow: hidden; margin-left: 10px;">
+                                        <img src="{% static 'img/default-profile.png' %}" alt="Account" class="profile-pic" style="width: 100%; display: inline-block; vertical-align: middle;">
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </li>
+>>>>>>> Stashed changes
                 {% else %}
                     <li><a href="{% url 'login' %}">Login</a></li>
                 {% endif %}
