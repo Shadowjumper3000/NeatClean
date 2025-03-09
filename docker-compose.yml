@@ -1,44 +1,45 @@
+name: neatclean
+
 version: '3.8'
 
 services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - mysql_data_prod:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   web:
     build:
       context: .
       dockerfile: Dockerfile
+      tags: neatclean:prod
+    restart: always
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
+    environment:
+      - DEBUG=False
+      - SECRET_KEY=${SECRET_KEY}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DJANGO_ALLOWED_HOSTS=${ALLOWED_HOSTS}
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      - DEBUG=True
-      - DB_NAME=neatclean
-      - DB_USER=django_user
-      - DB_PASSWORD=password
-      - DB_HOST=db
-      - DB_PORT=3306
-    volumes:
-      - .:/app
-    command: >
-      sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
-
-  db:
-    image: mysql:8.0
-    environment:
-      - MYSQL_DATABASE=neatclean
-      - MYSQL_USER=django_user
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=rootpassword
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      timeout: 5s
-      retries: 10
 
 volumes:
-  mysql_data:
+  mysql_data_prod:
+    name: neatclean_mysql_data_prod

@@ -10,7 +10,7 @@ body {
 }
 
 header, footer {
-    background-color: #4CAF50; /* Green */
+    background-color: #89dfe7; /* Green */
     color: white;
     text-align: center;
     padding: 1em 0;
@@ -56,8 +56,8 @@ h1, h2 {
 }
 
 button {
-    background-color: #cadfe4; /* Green */
-    color: white;
+    background-color: #27ac63; /* Green */
+    color: rgb(35, 198, 79);
     border: none;
     padding: 10px 20px;
     text-align: center;
