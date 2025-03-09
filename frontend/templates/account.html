@@ -1,13 +1,142 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Account - Entrepreneurship{% endblock %}
+{% block title %}Account - NeatClean{% endblock %}
 
 {% block content %}
-<h2>Account Details</h2>
-<p>Welcome, {{ user.username }}!</p>
-<p>Email: {{ user.email }}</p>
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit">Logout</button>
-</form>
+<div class="form-container">
+    <h2 class="text-center">Account Details</h2>
+    <form method="post" class="registration-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture:</label>
+                <div class="image-upload-wrapper">
+                    <input type="file"
+                           id="profile_picture"
+                           name="profile_picture"
+                           accept="image/*"
+                           class="image-upload"
+                           onchange="previewImage(this)">
+                    <div class="image-preview" id="imagePreview">
+                        {% if user.picture %}
+                            <img src="{{ user.picture.url }}" alt="Profile" class="preview-img" style="display: block;">
+                        {% else %}
+                            <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="preview-img">
+                        {% endif %}
+                        <span class="preview-text" {% if user.picture %}style="display: none;"{% endif %}>
+                            No image selected
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" value="{{ user.phone }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="street">Street:</label>
+                <input type="text" id="street" name="street" value="{{ user.street }}" autocomplete="address-line1">
+            </div>
+            <div class="form-group">
+                <label for="street_number">Street Number:</label>
+                <input type="text" id="street_number" name="street_number" value="{{ user.street_number }}">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="apartment">Apartment:</label>
+                <input type="text" id="apartment" name="apartment" value="{{ user.apartment }}" autocomplete="address-line2">
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" value="{{ user.city }}" autocomplete="address-level2">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" value="{{ user.state }}" autocomplete="address-level1">
+            </div>
+            <div class="form-group">
+                <label for="zip_code">ZIP Code:</label>
+                <input type="text" id="zip_code" name="zip_code" value="{{ user.zip_code }}" autocomplete="postal-code">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" value="{{ user.country }}" autocomplete="country">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="submit-btn">Update Profile</button>
+        </div>
+    </form>
+
+    <div class="form-row mt-4">
+        <form method="post" action="{% url 'logout' %}" class="w-100">
+            {% csrf_token %}
+            <button type="submit" class="submit-btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = preview.querySelector('.preview-img');
+    const previewText = preview.querySelector('.preview-text');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImg.style.display = 'block';
+            previewImg.src = e.target.result;
+            previewText.style.display = 'none';
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        previewImg.src = '{% static "img/default-profile.png" %}';
+        previewText.style.display = 'block';
+    }
+}
+</script>
 {% endblock %}

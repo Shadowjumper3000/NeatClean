@@ -2,11 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.http import JsonResponse
-from django.db import IntegrityError
 from database.forms import UserRegisterForm
-from database.models import Profile
+from database.models import CustomUser
 
 
 def index(request):
@@ -17,7 +14,9 @@ def index(request):
 def staff_list(request):
     date = request.GET.get("date")
     time = request.GET.get("time")
-    staff_list = Profile.objects.all()
+    staff_list = CustomUser.objects.filter(
+        user_type="staff"
+    )  # Change to filter CustomUser
     context = {
         "date": date,
         "time": time,
@@ -42,32 +41,20 @@ def login_view(request):
 
 
 def register_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
-            profile = Profile(
-                user=user,
-                user_type=form.cleaned_data['user_type'],
-                city=form.cleaned_data['city'],
-                zip=form.cleaned_data['zip'],
-                street=form.cleaned_data['street'],
-                address=form.cleaned_data['address'],
-                apartment_door_floor=form.cleaned_data['apartment_door_floor'],
-                phone_number=form.cleaned_data['phone_number'],
-                languages=form.cleaned_data['languages'],
-                rating=form.cleaned_data['rating'],
-                image_url=form.cleaned_data['image_url']
-            )
-            profile.save()
             login(request, user)
-            messages.success(request, 'Registration successful!')
-            return redirect('home')  # Redirect to the home page after registration
+            messages.success(request, "Registration successful!")
+            return redirect("index")
         else:
-            messages.error(request, 'Registration failed. Please correct the errors below.')
+            messages.error(
+                request, "Registration failed. Please correct the errors below."
+            )
     else:
         form = UserRegisterForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, "register.html", {"form": form})
 
 
 @login_required
@@ -82,8 +69,29 @@ def logout_view(request):
 
 @login_required
 def account(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
+    if request.method == "POST":
+        user = request.user
+        # Update user information
+        user.first_name = request.POST.get("first_name")
+        user.last_name = request.POST.get("last_name")
+        user.email = request.POST.get("email")
+        user.phone = request.POST.get("phone")
+        user.street = request.POST.get("street")
+        user.street_number = request.POST.get("street_number")
+        user.apartment = request.POST.get("apartment")
+        user.city = request.POST.get("city")
+        user.state = request.POST.get("state")
+        user.zip_code = request.POST.get("zip_code")
+        user.country = request.POST.get("country")
+
+        # Handle profile picture upload
+        if request.FILES.get("profile_picture"):
+            user.picture = request.FILES["profile_picture"]
+
+        user.save()
+        messages.success(request, "Your profile has been updated successfully!")
+        return redirect("account")
+
     return render(request, "account.html", {"user": request.user})
 
 
@@ -92,4 +100,3 @@ def bookings(request):
     if not request.user.is_authenticated:
         return redirect("login")
     return render(request, "bookings.html")
-

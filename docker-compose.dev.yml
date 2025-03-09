@@ -5,6 +5,7 @@ version: '3.8'
 services:
   db:
     image: mysql:8.0
+    container_name: neatclean_db_dev
     environment:
       - MYSQL_DATABASE=neatclean
       - MYSQL_USER=django_user
@@ -12,21 +13,24 @@ services:
       - MYSQL_ROOT_PASSWORD=rootpassword
     volumes:
       - mysql_data_dev:/var/lib/mysql
+      - media_files:/app/media
     ports:
-      - "3306:3306"
+      - "3308:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 5s
       timeout: 5s
       retries: 10
 
   web:
     image: neatclean:dev
+    container_name: neatclean_web_dev
     build:
       context: .
       dockerfile: Dockerfile.dev
     volumes:
       - .:/app
+      - media_files:/app/media
     ports:
       - "8000:8000"
     environment:
@@ -55,3 +59,5 @@ services:
 volumes:
   mysql_data_dev:
     name: neatclean_mysql_data_dev
+  media_files:
+    name: neatclean_media_files_dev
