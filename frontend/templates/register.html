@@ -125,6 +125,15 @@
             </div>
         </div>
 
+        <div class="form-row staff-only" style="display: none;">
+            <div class="form-group">
+                <label for="languages">Languages Spoken:</label>
+                <div class="language-selection">
+                    {{ form.languages }}
+                </div>
+            </div>
+        </div>
+
         <div class="form-row">
             <button type="submit" class="submit-btn">Register</button>
         </div>
@@ -156,5 +165,20 @@ function previewImage(input) {
         previewText.style.display = 'block';
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const userTypeSelect = document.querySelector('#id_user_type');
+    const staffOnlyFields = document.querySelectorAll('.staff-only');
+
+    function toggleStaffFields() {
+        const isStaff = userTypeSelect.value === 'staff';
+        staffOnlyFields.forEach(field => {
+            field.style.display = isStaff ? 'block' : 'none';
+        });
+    }
+
+    userTypeSelect.addEventListener('change', toggleStaffFields);
+    toggleStaffFields(); // Initial state
+});
 </script>
 {% endblock %}

@@ -15,9 +15,17 @@
             <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="card-image">
         {% endif %}
         <div class="card-text">
-            <h2>{{ staff.surname }} {{ staff.name }}</h2>
+            <h2>{{ staff.first_name }} {{ staff.last_name }}</h2>
+            <div class="rating">
+                <span class="stars">★</span> {{ staff.rating|floatformat:1 }}
+            </div>
+            <div class="languages">
+                {% for language in staff.languages.all %}
+                    <span class="language-tag">{{ language.name }}</span>
+                {% endfor %}
+            </div>
             <div class="actions">
-                <button type="button" onclick="bookCleaner('{{ staff.id }}', '{{ staff.surname }} {{ staff.name }}')">Book cleaning</button>
+                <button type="button" onclick="bookCleaner('{{ staff.id }}', '{{ staff.get_full_name }}')">Book cleaning</button>
             </div>
         </div>
     </div>

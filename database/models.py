@@ -10,6 +10,19 @@ def user_directory_path(instance, filename):
     return f"profile_pictures/{instance.user_type}/{instance.id}.{ext}"
 
 
+class Language(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    code = models.CharField(
+        max_length=2, unique=True, help_text="ISO 639-1 language code"
+    )
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class CustomUser(AbstractUser):
     # Personal Information
     phone = models.CharField(
@@ -26,6 +39,12 @@ class CustomUser(AbstractUser):
         choices=[("customer", "Customer"), ("staff", "Staff")],
         default="customer",
         help_text="Type of user (e.g., Customer or Staff)",
+    )
+    languages = models.ManyToManyField(
+        Language,
+        blank=True,
+        help_text="Languages spoken by the staff member",
+        related_name="speakers",
     )
 
     # Address Information
@@ -48,6 +67,7 @@ class CustomUser(AbstractUser):
     country = models.CharField(
         max_length=100, default="United States", help_text="Country"
     )
+    rating = models.FloatField(default=0.0)
 
     class Meta:
         verbose_name = "User"
