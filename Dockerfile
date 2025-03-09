@@ -2,11 +2,16 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# Install system dependencies including Pillow requirements
 RUN apt-get update && apt-get install -y \
     default-libmysqlclient-dev \
     build-essential \
     pkg-config \
     netcat-traditional \
+    python3-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    libpng-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .

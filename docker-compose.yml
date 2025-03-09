@@ -12,9 +12,10 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
-      - mysql_data_prod:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
+      - media_files:/app/media # Add this volume for media files
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -36,10 +37,13 @@ services:
       - DB_HOST=db
       - DB_PORT=3306
       - DJANGO_ALLOWED_HOSTS=${ALLOWED_HOSTS}
+    volumes:
+      - .:/app
+      - media_files:/app/media # Share the same volume with db container
     depends_on:
       db:
         condition: service_healthy
 
 volumes:
-  mysql_data_prod:
-    name: neatclean_mysql_data_prod
+  mysql_data:
+  media_files: # Define the new volume

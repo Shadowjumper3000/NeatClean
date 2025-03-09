@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Register - NeatClean{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="text-center">Register</h2>
+    <form method="post" class="registration-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="user_type">I am a:</label>
+                <select id="user_type" name="user_type" required>
+                    <option value="customer">Customer</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="password1">Password:</label>
+                <input type="password" id="password1" name="password1" required>
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password:</label>
+                <input type="password" id="password2" name="password2" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="street">Street:</label>
+                <input type="text" id="street" name="street" autocomplete="address-line1">
+            </div>
+            <div class="form-group">
+                <label for="street_number">Street Number:</label>
+                <input type="text" id="street_number" name="street_number">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="apartment">Apartment:</label>
+                <input type="text" id="apartment" name="apartment" autocomplete="address-line2">
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" autocomplete="address-level2">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" autocomplete="address-level1">
+            </div>
+            <div class="form-group">
+                <label for="zip_code">ZIP Code:</label>
+                <input type="text" id="zip_code" name="zip_code" autocomplete="postal-code">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" autocomplete="country" value="United States">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture:</label>
+                <div class="image-upload-wrapper">
+                    <input type="file"
+                           id="profile_picture"
+                           name="profile_picture"
+                           accept="image/*"
+                           class="image-upload"
+                           onchange="previewImage(this)">
+                    <div class="image-preview" id="imagePreview">
+                        <img src="" alt="Image Preview" class="preview-img">
+                        <span class="preview-text">No image selected</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="submit-btn">Register</button>
+        </div>
+    </form>
+    <p class="text-center">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = preview.querySelector('.preview-img');
+    const previewText = preview.querySelector('.preview-text');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImg.style.display = 'block';
+            previewImg.src = e.target.result;
+            previewText.style.display = 'none';
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        previewImg.style.display = 'none';
+        previewImg.src = '';
+        previewText.style.display = 'block';
+    }
+}
+</script>
+{% endblock %}
