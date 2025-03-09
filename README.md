@@ -70,3 +70,25 @@ To set up a Python virtual environment and install the required packages from `r
    ```sh
    python manage.py migrate
    ```
+
+
+  ## Docker Deployment
+
+  To deploy the application using Docker, follow these steps:
+
+  1. **Build and start the containers**:
+
+    ```sh
+    docker-compose -f docker-compose.dev.yml up --build
+    ```
+
+  2. **Access the application**:
+
+    - Open your web browser and navigate to `http://localhost:8000` to access the application.
+
+  3. **Stop the containers**:
+
+    - To stop the running containers, use the following command:
+      ```sh
+      docker-compose -f docker-compose.dev.yml down
+      ```
