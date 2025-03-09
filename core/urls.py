@@ -27,6 +27,9 @@ from .views import (
     bookings,
     staff_list,
     logout_view,
+    create_booking,
+    get_user_profile,
+    update_booking_status,
 )
 
 urlpatterns = [
@@ -38,4 +41,11 @@ urlpatterns = [
     path("staff-list/", staff_list, name="staff_list"),
     path("register/", register_view, name="register"),
     path("logout/", logout_view, name="logout"),
+    path("api/bookings/create/", create_booking, name="create_booking"),
+    path("api/user/profile/", get_user_profile, name="get_user_profile"),
+    path(
+        "api/bookings/<int:booking_id>/status/",
+        update_booking_status,
+        name="update_booking_status",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

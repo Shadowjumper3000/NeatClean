@@ -7,20 +7,24 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="icon" href="{% static 'img/banner.png' %}" type="image/webp"> <!-- Add this line for favicon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Scripts - Load in correct order -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{% static 'auth.js' %}" defer></script>
     <script src="{% static 'booking.js' %}" defer></script>
+    <script src="{% static 'booking-status.js' %}" defer></script>
 </head>
 <body>
     <header>
         <div class="banner-container">
             <img src="{% static 'img/banner.png' %}" alt="Banner" class="banner">
         </div>
-        <h1>Neatify</h1>
+        <a href="{% url 'index' %}" class="title-link">
+            <h1>Neatify</h1>
+        </a>
         <nav>
             <ul>
-                <li><a href="{% url 'index' %}">Home</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'bookings' %}">Bookings</a></li> <!-- Show Bookings tab only when logged in -->
                     <li class="profile-container">
                         <a href="{% url 'account' %}" class="profile-link">
                             {% if user.picture %}
@@ -28,7 +32,7 @@
                                     <img src="{{ user.picture.url }}" alt="Account" class="profile-pic" style="width: 100%; display: inline-block; vertical-align: middle;">
                                 </div>
                             {% else %}
-                                <div style="display: flex; align-items: center; max-width: 50px;">
+                                <div style="display: flex; align-items: center; max-width: 50px; border-radius: 50%; overflow: hidden;">
                                     <img src="{% static 'img/default-profile.png' %}" alt="Account" class="profile-pic" style="width: 100%; display: inline-block; vertical-align: middle;">
                                 </div>
                             {% endif %}
@@ -47,5 +51,6 @@
         <p>&copy; 2025 Entrepreneurship Project</p>
     </footer>
     {% block extra_js %}{% endblock %}
+    <script src="{% static 'calendar.js' %}" defer></script>
 </body>
 </html>

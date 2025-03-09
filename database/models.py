@@ -10,6 +10,19 @@ def user_directory_path(instance, filename):
     return f"profile_pictures/{instance.user_type}/{instance.id}.{ext}"
 
 
+class Language(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    code = models.CharField(
+        max_length=2, unique=True, help_text="ISO 639-1 language code"
+    )
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class CustomUser(AbstractUser):
     # Personal Information
     phone = models.CharField(
@@ -26,6 +39,12 @@ class CustomUser(AbstractUser):
         choices=[("customer", "Customer"), ("staff", "Staff")],
         default="customer",
         help_text="Type of user (e.g., Customer or Staff)",
+    )
+    languages = models.ManyToManyField(
+        Language,
+        blank=True,
+        help_text="Languages spoken by the staff member",
+        related_name="speakers",
     )
 
     # Address Information
@@ -48,6 +67,7 @@ class CustomUser(AbstractUser):
     country = models.CharField(
         max_length=100, default="United States", help_text="Country"
     )
+    rating = models.FloatField(default=0.0)
 
     class Meta:
         verbose_name = "User"
@@ -71,3 +91,37 @@ class CustomUser(AbstractUser):
             except CustomUser.DoesNotExist:
                 pass
         super().save(*args, **kwargs)
+
+
+class Booking(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("confirmed", "Confirmed"),
+        ("completed", "Completed"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    customer = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="bookings_as_customer"
+    )
+    staff = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="bookings_as_staff"
+    )
+    date = models.DateField()
+    time = models.TimeField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-date", "-time"]
+
+    def __str__(self):
+        return f"Booking {self.id}: {self.customer} with {self.staff} on {self.date} at {self.time}"
+
+    @staticmethod
+    def get_pending_bookings(staff_id):
+        return Booking.objects.filter(staff_id=staff_id, status="pending").order_by(
+            "date", "time"
+        )
