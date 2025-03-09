@@ -1,38 +1,19 @@
-FROM python:3.12-slim AS builder
-
-# Set build env vars
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    DEBIAN_FRONTEND=noninteractive
-
-WORKDIR /build
-
-# Install build dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    default-libmysqlclient-dev \
-    build-essential \
-    pkg-config \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt gunicorn
-
-# Final stage
 FROM python:3.12-slim
 
-# Set runtime env vars
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DEBIAN_FRONTEND=noninteractive
 
 WORKDIR /app
 
-# Install runtime dependencies
+# Install system dependencies and cleanup in one layer
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    default-libmysqlclient-dev \
+    build-essential \
+    pkg-config \
     netcat-traditional \
+    python3-dev \
     libjpeg-dev \
     zlib1g-dev \
     libpng-dev \
@@ -40,18 +21,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Copy installed Python packages from builder stage
-COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 # Create non-root user
 RUN useradd -m appuser && \
     mkdir -p /app/static /app/media && \
     chown -R appuser:appuser /app
-
-# Copy entrypoint script
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Copy application code
 COPY --chown=appuser:appuser . .
@@ -65,10 +42,23 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 
 EXPOSE 8000
 
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application", \
-     "--workers", "3", \
-     "--timeout", "120", \
-     "--keep-alive", "5", \
-     "--max-requests", "1000", \
-     "--max-requests-jitter", "50"]
+# Combined initialization and startup command
+CMD set -e; \
+    echo "Waiting for database..."; \
+    until nc -z -v -w30 db 3306; do \
+        echo "Waiting for database connection..."; \
+        sleep 5; \
+    done; \
+    echo "Running migrations..."; \
+    python manage.py migrate --noinput; \
+    echo "Collecting static files..."; \
+    python manage.py collectstatic --noinput; \
+    echo "Starting Gunicorn..."; \
+    exec gunicorn \
+        --bind 0.0.0.0:8000 \
+        core.wsgi:application \
+        --workers 3 \
+        --timeout 120 \
+        --keep-alive 5 \
+        --max-requests 1000 \
+        --max-requests-jitter 50
