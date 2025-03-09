@@ -28,7 +28,7 @@
                                     <img src="{{ user.picture.url }}" alt="Account" class="profile-pic" style="width: 100%; display: inline-block; vertical-align: middle;">
                                 </div>
                             {% else %}
-                                <div style="display: flex; align-items: center; max-width: 50px;">
+                                <div style="display: flex; align-items: center; max-width: 50px; border-radius: 50%; overflow: hidden;">
                                     <img src="{% static 'img/default-profile.png' %}" alt="Account" class="profile-pic" style="width: 100%; display: inline-block; vertical-align: middle;">
                                 </div>
                             {% endif %}

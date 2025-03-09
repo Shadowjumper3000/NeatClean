@@ -42,9 +42,16 @@ def login_view(request):
 
 def register_view(request):
     if request.method == "POST":
-        form = UserRegisterForm(request.POST)
+        form = UserRegisterForm(
+            request.POST, request.FILES
+        )  # Add request.FILES for file upload
         if form.is_valid():
             user = form.save()
+            # Handle profile picture
+            if "profile_picture" in request.FILES:
+                user.picture = request.FILES["profile_picture"]
+                user.save(update_fields=["picture"])
+
             login(request, user)
             messages.success(request, "Registration successful!")
             return redirect("index")

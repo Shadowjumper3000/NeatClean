@@ -2,35 +2,79 @@
 
 {% load static %}
 
-{% block title %}Home - Entrepreneurship{% endblock %}
+{% block title %}
+    {% if user.user_type == 'staff' %}
+        Staff Dashboard - NeatClean
+    {% else %}
+        Book Cleaning - NeatClean
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="container">
     <aside class="sidebar">
-        <h3>Premium</h3>
-        <p>Upgrade to premium for additional benefits.</p>
-        <h3>More Info</h3>
-        <p>Learn more about our services.</p>
-        <h3>Placeholder</h3>
-        <p>Additional content can go here.</p>
+        {% if user.user_type == 'staff' %}
+            <h3>Cleaning Requests</h3>
+            <div id="pending-requests">
+                Loading requests...
+            </div>
+        {% else %}
+            <h3>Premium</h3>
+            <p>Upgrade to premium for additional benefits.</p>
+            <h3>More Info</h3>
+            <p>Learn more about our services.</p>
+        {% endif %}
     </aside>
+
     <div class="main-content">
-        <h2>Cleaning Service Date Picker</h2>
-        <p>Select a date and time for your cleaning service.</p>
-        <form id="availability-form">
-            <div id="calendar-container">
-                <input type="date" id="date-picker">
+        {% if user.user_type == 'staff' %}
+            <h2>Set Your Availability</h2>
+            <div id="staff-calendar">
+                <h3>Select Working Days</h3>
+                <div id="calendar-container">
+                    <input type="date" id="availability-date" multiple>
+                </div>
+                <div id="time-slots">
+                    <h4>Working Hours</h4>
+                    <div class="time-range">
+                        <label for="start-time">Start Time:</label>
+                        <input type="time" id="start-time">
+                        <label for="end-time">End Time:</label>
+                        <input type="time" id="end-time">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="save-availability">
+                        Save Availability
+                    </button>
+                </div>
+                <div id="upcoming-bookings">
+                    <h3>Upcoming Bookings</h3>
+                    <div id="bookings-list">
+                        Loading bookings...
+                    </div>
+                </div>
             </div>
-            <div id="time-container">
-                <label for="time-picker">Select Time:</label>
-                <input type="time" id="time-picker">
-            </div>
-            <button type="button" class="btn btn-primary" id="check-availability-button">
-                Check Availability
-            </button>
-        </form>
+        {% else %}
+            <h2>Book a Cleaning Service</h2>
+            <p>Select a date and time for your cleaning service.</p>
+            <form id="availability-form">
+                <div id="calendar-container">
+                    <input type="date" id="date-picker">
+                </div>
+                <div id="time-container">
+                    <label for="time-picker">Select Time:</label>
+                    <input type="time" id="time-picker">
+                </div>
+                <button type="button" class="btn btn-primary" id="check-availability-button">
+                    Check Availability
+                </button>
+            </form>
+        {% endif %}
     </div>
 </div>
 
-<script src="{% static 'calendar.js' %}"></script>
+{% if user.user_type == 'staff' %}
+    <script src="{% static 'staff.js' %}" defer></script>
+{% else %}
+    <script src="{% static 'calendar.js' %}" defer></script>
+{% endif %}
 {% endblock %}
