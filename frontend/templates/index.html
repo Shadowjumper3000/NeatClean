@@ -11,76 +11,183 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <aside class="sidebar">
-        {% if user.user_type == 'staff' %}
-            <h3>Cleaning Requests</h3>
-            <div id="pending-requests">
-                Loading requests...
+{% if user.user_type == 'staff' %}
+    <div class="dashboard-container">
+        <!-- Left Column - Pending Requests -->
+        <div class="dashboard-column pending-column">
+            <h3>Pending Requests</h3>
+            <div class="bookings-list">
+                {% if pending_bookings %}
+                    {% for booking in pending_bookings %}
+                        <div class="booking-card pending">
+                            <div class="booking-header">
+                                <h4>Booking #{{ booking.id }}</h4>
+                                <span class="status pending">Pending</span>
+                            </div>
+                            <div class="booking-details">
+                                <p><strong>Customer:</strong> {{ booking.customer.get_full_name }}</p>
+                                <p><strong>Date:</strong> {{ booking.date }}</p>
+                                <p><strong>Time:</strong> {{ booking.time }}</p>
+                                <p><strong>Address:</strong> {{ booking.address }}</p>
+                                <div class="booking-actions">
+                                    <button onclick="updateBookingStatus('{{ booking.id }}', 'confirmed')" 
+                                            class="btn-confirm">
+                                        Accept
+                                    </button>
+                                    <button onclick="updateBookingStatus('{{ booking.id }}', 'cancelled')" 
+                                            class="btn-cancel">
+                                        Decline
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-bookings">No pending requests</p>
+                {% endif %}
             </div>
-        {% else %}
-            <h3>Premium</h3>
-            <p>Upgrade to premium for additional benefits.</p>
-            <h3>More Info</h3>
-            <p>Learn more about our services.</p>
-        {% endif %}
-    </aside>
+        </div>
 
-    {% if user.user_type == 'staff' %}
-        <div class="main-content">
-            <h2>Set Your Availability</h2>
+        <!-- Middle Column - Availability Settings -->
+        <div class="dashboard-column availability-column">
+            <h3>Set Your Availability</h3>
             <div id="staff-calendar">
-                <h3>Select Working Days</h3>
-                <div id="calendar-container">
-                    <input type="text" id="availability-date" class="flatpickr" placeholder="Select dates...">
+                <div class="calendar-section">
+                    <h4>Select Working Days</h4>
+                    <div id="calendar-container">
+                        <input type="text" id="availability-date" class="flatpickr" placeholder="Select dates...">
+                    </div>
                 </div>
-                <div id="time-slots">
+                <div class="time-section">
                     <h4>Working Hours</h4>
                     <div class="time-range">
-                        <label for="start-time">Start Time:</label>
-                        <input type="text" id="start-time" class="flatpickr-time" placeholder="Select start time...">
-                        <label for="end-time">End Time:</label>
-                        <input type="text" id="end-time" class="flatpickr-time" placeholder="Select end time...">
+                        <div class="time-input">
+                            <label for="start-time">Start Time:</label>
+                            <input type="text" id="start-time" class="flatpickr-time" placeholder="Select start time...">
+                        </div>
+                        <div class="time-input">
+                            <label for="end-time">End Time:</label>
+                            <input type="text" id="end-time" class="flatpickr-time" placeholder="Select end time...">
+                        </div>
                     </div>
                     <button type="button" class="btn btn-primary" id="save-availability">
                         Save Availability
                     </button>
                 </div>
-                <div id="upcoming-bookings">
-                    <h3>Upcoming Bookings</h3>
-                    <div id="bookings-list">
-                        Loading bookings...
-                    </div>
-                </div>
             </div>
         </div>
-    {% endif %}
 
-    {% if not user.user_type == 'staff' %}
-        <div class="main-content">
+        <!-- Right Column - Confirmed Bookings -->
+        <div class="dashboard-column confirmed-column">
+            <h3>Upcoming Bookings</h3>
+            <div class="bookings-list">
+                {% if confirmed_bookings %}
+                    {% for booking in confirmed_bookings %}
+                        <div class="booking-card confirmed">
+                            <div class="booking-header">
+                                <h4>Booking #{{ booking.id }}</h4>
+                                <span class="status {{ booking.status }}">{{ booking.status|title }}</span>
+                            </div>
+                            <div class="booking-details">
+                                <p><strong>Customer:</strong> {{ booking.customer.get_full_name }}</p>
+                                <p><strong>Date:</strong> {{ booking.date }}</p>
+                                <p><strong>Time:</strong> {{ booking.time }}</p>
+                                <p><strong>Address:</strong> {{ booking.address }}</p>
+                                <div class="booking-actions">
+                                    <button onclick="updateBookingStatus('{{ booking.id }}', 'cancelled')" 
+                                            class="btn-cancel">
+                                        Cancel
+                                    </button>
+                                    <button onclick="openChat('{{ booking.customer.id }}')" 
+                                            class="btn-message">
+                                        Message
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-bookings">No confirmed bookings</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="dashboard-container">
+        <!-- Left Column - Book Service -->
+        <div class="dashboard-column">
+            <h2>Premium Subscription</h2>
+            <p>Upgrade to our premium subscription to enjoy additional benefits and features.</p>
+            <button type="button" class="btn btn-primary">Upgrade Now</button>
+
+            <h2>Upcoming Features</h2>
+            <p>Stay tuned for our upcoming features that will enhance your experience.</p>
+            <ul>
+                <li>Feature 1: Description of feature 1.</li>
+                <li>Feature 2: Description of feature 2.</li>
+                <li>Feature 3: Description of feature 3.</li>
+            </ul>
+        </div>
+
+        <!-- Center Column - Empty Space for Future Features -->
+        <div class="dashboard-column booking-column">
             <h2>Book a Cleaning Service</h2>
-            <p>Select a date and time for your cleaning service.</p>
             <form id="availability-form">
-                <div class="calendar-time-container">
-                    <div id="calendar-container">
-                        <input type="text"
-                               id="date-picker"
-                               name="date-picker"
-                               class="flatpickr-input"
-                               placeholder="Select date and time..."
-                               data-input>
-                    </div>
-                </div>
-                <button type="button"
-                        id="check-availability-button"
-                        class="btn btn-primary"
-                        style="display: none;">
-                    Check Availability
-                </button>
+            <div class="calendar-time-container">
+                <input type="text"
+                   id="date-picker"
+                   name="date-picker"
+                   class="flatpickr-input"
+                   placeholder="Select date and time..."
+                   data-input>
+            </div>
+            <button type="button"
+                id="check-availability-button"
+                class="btn btn-primary"
+                style="display: none;">
+                Check Availability
+            </button>
             </form>
         </div>
-    {% endif %}
-</div>
+
+        <!-- Right Column - Upcoming Bookings -->
+        <div class="dashboard-column confirmed-column">
+            <h3>Your Bookings</h3>
+            <div class="bookings-list">
+                {% if bookings %}
+                    {% for booking in bookings %}
+                        <div class="booking-card {{ booking.status }}">
+                            <div class="booking-header">
+                                <h4>Booking #{{ booking.id }}</h4>
+                                <span class="status {{ booking.status }}">{{ booking.status|title }}</span>
+                            </div>
+                            <div class="booking-details">
+                                <p><strong>Staff:</strong> {{ booking.staff.get_full_name }}</p>
+                                <p><strong>Date:</strong> {{ booking.date }}</p>
+                                <p><strong>Time:</strong> {{ booking.time }}</p>
+                                <p><strong>Address:</strong> {{ booking.address }}</p>
+                                <div class="booking-actions">
+                                    {% if booking.status == 'confirmed' %}
+                                        <button onclick="updateBookingStatus('{{ booking.id }}', 'cancelled')"
+                                                class="btn-cancel">
+                                            Cancel
+                                        </button>
+                                    {% endif %}
+                                    <button onclick="openChat('{{ booking.staff.id }}')"
+                                            class="btn-message">
+                                        Message
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-bookings">No bookings yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}

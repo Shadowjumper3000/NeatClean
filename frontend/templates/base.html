@@ -12,18 +12,19 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{% static 'auth.js' %}" defer></script>
     <script src="{% static 'booking.js' %}" defer></script>
+    <script src="{% static 'booking-status.js' %}" defer></script>
 </head>
 <body>
     <header>
         <div class="banner-container">
             <img src="{% static 'img/banner.png' %}" alt="Banner" class="banner">
         </div>
-        <h1>Neatify</h1>
+        <a href="{% url 'index' %}" class="title-link">
+            <h1>Neatify</h1>
+        </a>
         <nav>
             <ul>
-                <li><a href="{% url 'index' %}">Home</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'bookings' %}">Bookings</a></li> <!-- Show Bookings tab only when logged in -->
                     <li class="profile-container">
                         <a href="{% url 'account' %}" class="profile-link">
                             {% if user.picture %}

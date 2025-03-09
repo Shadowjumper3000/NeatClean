@@ -119,3 +119,9 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"Booking {self.id}: {self.customer} with {self.staff} on {self.date} at {self.time}"
+
+    @staticmethod
+    def get_pending_bookings(staff_id):
+        return Booking.objects.filter(staff_id=staff_id, status="pending").order_by(
+            "date", "time"
+        )

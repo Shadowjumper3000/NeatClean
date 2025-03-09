@@ -8,10 +8,36 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from database.models import Booking
 import json
+from django.db import models
+from django.utils import timezone
 
 
+@login_required
 def index(request):
-    return render(request, "index.html")
+    context = {}
+    if request.user.user_type == "staff":
+        pending_bookings = Booking.objects.filter(
+            staff=request.user, status="pending"
+        ).order_by("date", "time")
+
+        confirmed_bookings = Booking.objects.filter(
+            staff=request.user, status="confirmed", date__gte=timezone.now().date()
+        ).order_by("date", "time")
+
+        context.update(
+            {
+                "pending_bookings": pending_bookings,
+                "confirmed_bookings": confirmed_bookings,
+            }
+        )
+    else:
+        # Add bookings for customers
+        bookings = Booking.objects.filter(customer=request.user).order_by(
+            "-date", "-time"
+        )
+        context["bookings"] = bookings
+
+    return render(request, "index.html", context)
 
 
 @login_required
@@ -120,8 +146,12 @@ def bookings(request):
     if request.user.user_type == "customer":
         user_bookings = Booking.objects.filter(customer=request.user)
     else:
-        user_bookings = Booking.objects.filter(staff=request.user)
-
+        # For staff, show all bookings with pending first
+        user_bookings = Booking.objects.filter(staff=request.user).order_by(
+            models.Case(models.When(status="pending", then=0), default=1),
+            "-date",
+            "-time",
+        )
     return render(request, "bookings.html", {"bookings": user_bookings})
 
 
@@ -140,3 +170,44 @@ def get_user_profile(request):
             "country": user.country,
         }
     )
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_booking_status(request, booking_id):
+    try:
+        data = json.loads(request.body)
+        booking = Booking.objects.get(id=booking_id)
+
+        # Only staff can update booking status
+        if request.user.user_type != "staff" or booking.staff != request.user:
+            return JsonResponse(
+                {"status": "error", "message": "Unauthorized"}, status=403
+            )
+
+        # Validate the status
+        valid_statuses = ["confirmed", "cancelled"]
+        if data["status"] not in valid_statuses:
+            return JsonResponse(
+                {"status": "error", "message": "Invalid status"}, status=400
+            )
+
+        # Update the booking status
+        booking.status = data["status"]
+        booking.save()
+
+        # Return success response with updated booking info
+        return JsonResponse(
+            {
+                "status": "success",
+                "booking_id": booking.id,
+                "new_status": booking.status,
+                "message": f"Booking {booking.status} successfully",
+            }
+        )
+    except Booking.DoesNotExist:
+        return JsonResponse(
+            {"status": "error", "message": "Booking not found"}, status=404
+        )
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
