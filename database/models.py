@@ -91,3 +91,31 @@ class CustomUser(AbstractUser):
             except CustomUser.DoesNotExist:
                 pass
         super().save(*args, **kwargs)
+
+
+class Booking(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("confirmed", "Confirmed"),
+        ("completed", "Completed"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    customer = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="bookings_as_customer"
+    )
+    staff = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="bookings_as_staff"
+    )
+    date = models.DateField()
+    time = models.TimeField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending")
+    address = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-date", "-time"]
+
+    def __str__(self):
+        return f"Booking {self.id}: {self.customer} with {self.staff} on {self.date} at {self.time}"

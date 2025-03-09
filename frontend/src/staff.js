@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
         maxDate: new Date().fp_incr(60), // Set availability up to 60 days ahead
         locale: {
             firstDayOfWeek: 1
+        },
+        onChange: function(selectedDates, dateStr) {
+            console.log('Selected dates:', dateStr);
         }
     });
 
@@ -29,5 +32,38 @@ document.addEventListener('DOMContentLoaded', function() {
         maxTime: "20:00",
         defaultHour: 17,
         minuteIncrement: 30
+    });
+
+    // Handle save availability
+    document.getElementById('save-availability').addEventListener('click', function() {
+        const dates = document.getElementById('availability-date').value;
+        const startTime = document.getElementById('start-time').value;
+        const endTime = document.getElementById('end-time').value;
+
+        if (!dates || !startTime || !endTime) {
+            alert('Please select dates and times');
+            return;
+        }
+
+        fetch('/api/availability/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                dates: dates,
+                startTime: startTime,
+                endTime: endTime
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Availability saved successfully!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to save availability');
+        });
     });
 });

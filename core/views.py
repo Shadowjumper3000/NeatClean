@@ -4,6 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from database.forms import UserRegisterForm
 from database.models import CustomUser, Language
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from database.models import Booking
+import json
 
 
 def index(request):
@@ -94,7 +98,45 @@ def account(request):
 
 
 @login_required
+@require_http_methods(["POST"])
+def create_booking(request):
+    try:
+        data = json.loads(request.body)
+        booking = Booking.objects.create(
+            customer=request.user,
+            staff_id=data["staff_id"],
+            date=data["date"],
+            time=data["time"],
+            address=data["address"],
+            status="pending",
+        )
+        return JsonResponse({"status": "success", "booking_id": booking.id})
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+@login_required
 def bookings(request):
-    if not request.user.is_authenticated:
-        return redirect("login")
-    return render(request, "bookings.html")
+    if request.user.user_type == "customer":
+        user_bookings = Booking.objects.filter(customer=request.user)
+    else:
+        user_bookings = Booking.objects.filter(staff=request.user)
+
+    return render(request, "bookings.html", {"bookings": user_bookings})
+
+
+@login_required
+@require_http_methods(["GET"])
+def get_user_profile(request):
+    user = request.user
+    return JsonResponse(
+        {
+            "street": user.street,
+            "street_number": user.street_number,
+            "apartment": user.apartment,
+            "city": user.city,
+            "state": user.state,
+            "zip_code": user.zip_code,
+            "country": user.country,
+        }
+    )

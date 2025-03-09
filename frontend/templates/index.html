@@ -26,8 +26,8 @@
         {% endif %}
     </aside>
 
-    <div class="main-content">
-        {% if user.user_type == 'staff' %}
+    {% if user.user_type == 'staff' %}
+        <div class="main-content">
             <h2>Set Your Availability</h2>
             <div id="staff-calendar">
                 <h3>Select Working Days</h3>
@@ -53,30 +53,40 @@
                     </div>
                 </div>
             </div>
-        {% else %}
+        </div>
+    {% endif %}
+
+    {% if not user.user_type == 'staff' %}
+        <div class="main-content">
             <h2>Book a Cleaning Service</h2>
             <p>Select a date and time for your cleaning service.</p>
             <form id="availability-form">
                 <div class="calendar-time-container">
                     <div id="calendar-container">
-                        <input type="text" id="date-picker" class="flatpickr" placeholder="Select date...">
-                    </div>
-                    <div id="time-container">
-                        <label for="time-picker">Select Time:</label>
-                        <input type="text" id="time-picker" class="flatpickr-time" placeholder="Select time...">
+                        <input type="text"
+                               id="date-picker"
+                               name="date-picker"
+                               class="flatpickr-input"
+                               placeholder="Select date and time..."
+                               data-input>
                     </div>
                 </div>
-                <button type="button" class="btn btn-primary" id="check-availability-button">
+                <button type="button"
+                        id="check-availability-button"
+                        class="btn btn-primary"
+                        style="display: none;">
                     Check Availability
                 </button>
             </form>
-        {% endif %}
-    </div>
+        </div>
+    {% endif %}
 </div>
+{% endblock %}
 
-{% if user.user_type == 'staff' %}
-    <script src="{% static 'staff.js' %}" defer></script>
-{% else %}
-    <script src="{% static 'calendar.js' %}" defer></script>
-{% endif %}
+{% block extra_js %}
+    {% if user.user_type == 'staff' %}
+        <script src="{% static 'staff.js' %}" defer></script>
+    {% else %}
+        <script src="{% static 'calendar.js' %}" defer></script>
+    {% endif %}
 {% endblock %}

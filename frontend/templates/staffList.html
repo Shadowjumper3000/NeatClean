@@ -5,7 +5,12 @@
 
 {% block content %}
 <h2>Staff List</h2>
-<p>Here is the list of available staff.</p>
+<p>Here is the list of available staff for {{ date }} at {{ time }}.</p>
+
+<!-- Add hidden inputs to store date and time -->
+<input type="hidden" id="date" value="{{ date }}">
+<input type="hidden" id="time" value="{{ time }}">
+
 <div class="staff-grid">
     {% for staff in staff_list %}
     <div class="card">
@@ -25,12 +30,24 @@
                 {% endfor %}
             </div>
             <div class="actions">
-                <button type="button" onclick="bookCleaner('{{ staff.id }}', '{{ staff.get_full_name }}')">Book cleaning</button>
+                <button type="button"
+                        onclick="bookCleaner('{{ staff.id }}')"
+                        class="book-cleaning-btn">
+                    Book cleaning
+                </button>
             </div>
         </div>
     </div>
     {% endfor %}
-    <input type="hidden" id="date" value="{{ date }}">
-    <input type="hidden" id="time" value="{{ time }}">
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Staff list loaded');
+    console.log('Date:', document.getElementById('date').value);
+    console.log('Time:', document.getElementById('time').value);
+});
+</script>
 {% endblock %}
