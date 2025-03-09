@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Register - NeatClean{% endblock %}
 
@@ -19,6 +20,23 @@
 
         <div class="form-row">
             <div class="form-group">
+                <div class="image-upload-wrapper">
+                    <input type="file"
+                           id="profile_picture"
+                           name="profile_picture"
+                           accept="image/*"
+                           class="image-upload"
+                           hidden>
+                    <div class="image-preview" id="imagePreview" onclick="document.getElementById('profile_picture').click()">
+                        <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="preview-img">
+                        <span class="preview-text">Click to select image</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
             </div>
@@ -27,7 +45,7 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="user_type">I am a:</label>
-                <select id="user_type" name="user_type" required>
+                <select id="user_type" name="user_type" onchange="handleUserTypeChange(this)" required>
                     <option value="customer">Customer</option>
                     <option value="staff">Staff</option>
                 </select>
@@ -108,33 +126,6 @@
         </div>
 
         <div class="form-row">
-            <div class="form-group">
-                <label for="profile_picture">Profile Picture:</label>
-                <div class="image-upload-wrapper">
-                    <input type="file"
-                           id="profile_picture"
-                           name="profile_picture"
-                           accept="image/*"
-                           class="image-upload"
-                           onchange="previewImage(this)">
-                    <div class="image-preview" id="imagePreview">
-                        <img src="" alt="Image Preview" class="preview-img">
-                        <span class="preview-text">No image selected</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-row staff-only" style="display: none;">
-            <div class="form-group">
-                <label for="languages">Languages Spoken:</label>
-                <div class="language-selection">
-                    {{ form.languages }}
-                </div>
-            </div>
-        </div>
-
-        <div class="form-row">
             <button type="submit" class="submit-btn">Register</button>
         </div>
     </form>
@@ -159,26 +150,25 @@ function previewImage(input) {
         }
 
         reader.readAsDataURL(input.files[0]);
-    } else {
-        previewImg.style.display = 'none';
-        previewImg.src = '';
-        previewText.style.display = 'block';
     }
 }
 
+document.getElementById('profile_picture').addEventListener('change', function() {
+    previewImage(this);
+});
+
+function handleUserTypeChange(select) {
+    const staffFields = document.querySelectorAll('.staff-only');
+    const isStaff = select.value === 'staff';
+    
+    staffFields.forEach(field => {
+        field.style.display = isStaff ? 'block' : 'none';
+    });
+}
+
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    const userTypeSelect = document.querySelector('#id_user_type');
-    const staffOnlyFields = document.querySelectorAll('.staff-only');
-
-    function toggleStaffFields() {
-        const isStaff = userTypeSelect.value === 'staff';
-        staffOnlyFields.forEach(field => {
-            field.style.display = isStaff ? 'block' : 'none';
-        });
-    }
-
-    userTypeSelect.addEventListener('change', toggleStaffFields);
-    toggleStaffFields(); // Initial state
+    handleUserTypeChange(document.getElementById('user_type'));
 });
 </script>
 {% endblock %}

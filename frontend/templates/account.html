@@ -9,7 +9,7 @@
     <form method="post" class="registration-form" enctype="multipart/form-data">
         {% csrf_token %}
         {% if messages %}
-            <div class="alert alert-success">
+            <div class="alert alert-success text-center">
                 {% for message in messages %}
                     <p>{{ message }}</p>
                 {% endfor %}
@@ -18,22 +18,21 @@
 
         <div class="form-row">
             <div class="form-group">
-                <label for="profile_picture">Profile Picture:</label>
                 <div class="image-upload-wrapper">
                     <input type="file"
                            id="profile_picture"
                            name="profile_picture"
                            accept="image/*"
                            class="image-upload"
-                           onchange="previewImage(this)">
-                    <div class="image-preview" id="imagePreview">
+                           hidden>
+                    <div class="image-preview" id="imagePreview" onclick="document.getElementById('profile_picture').click()">
                         {% if user.picture %}
                             <img src="{{ user.picture.url }}" alt="Profile" class="preview-img" style="display: block;">
                         {% else %}
                             <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="preview-img">
                         {% endif %}
-                        <span class="preview-text" {% if user.picture %}style="display: none;"{% endif %}>
-                            No image selected
+                        <span class="preview-text" {% if user.picture %}style="display: none;{% endif %}">
+                            Click to select image
                         </span>
                     </div>
                 </div>
@@ -102,6 +101,28 @@
             </div>
         </div>
 
+        {% if user.user_type == 'staff' %}
+        <div class="form-row">
+            <div class="form-group">
+                <label>Languages Spoken:</label>
+                <div class="language-selection">
+                    {% for language in languages %}
+                    <div class="language-option">
+                        <input type="checkbox"
+                               id="language_{{ language.code }}"
+                               name="languages"
+                               value="{{ language.id }}"
+                               {% if language in user.languages.all %}checked{% endif %}>
+                        <label for="language_{{ language.code }}" class="language-label">
+                            {{ language.name }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <div class="form-row">
             <button type="submit" class="submit-btn">Update Profile</button>
         </div>
@@ -138,5 +159,15 @@ function previewImage(input) {
         previewText.style.display = 'block';
     }
 }
+
+// Add event listener for file input changes
+document.addEventListener('DOMContentLoaded', function() {
+    const profileInput = document.getElementById('profile_picture');
+    if (profileInput) {
+        profileInput.addEventListener('change', function() {
+            previewImage(this);
+        });
+    }
+});
 </script>
 {% endblock %}

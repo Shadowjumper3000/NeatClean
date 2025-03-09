@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from database.forms import UserRegisterForm
-from database.models import CustomUser
+from database.models import CustomUser, Language
 
 
 def index(request):
@@ -42,26 +42,17 @@ def login_view(request):
 
 def register_view(request):
     if request.method == "POST":
-        form = UserRegisterForm(
-            request.POST, request.FILES
-        )  # Add request.FILES for file upload
+        form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
-            # Handle profile picture
-            if "profile_picture" in request.FILES:
-                user.picture = request.FILES["profile_picture"]
-                user.save(update_fields=["picture"])
-
             login(request, user)
             messages.success(request, "Registration successful!")
             return redirect("index")
-        else:
-            messages.error(
-                request, "Registration failed. Please correct the errors below."
-            )
     else:
         form = UserRegisterForm()
-    return render(request, "register.html", {"form": form})
+
+    languages = Language.objects.all().order_by("name")
+    return render(request, "register.html", {"form": form, "languages": languages})
 
 
 @login_required

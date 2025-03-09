@@ -9,10 +9,10 @@ def create_test_users(apps, schema_editor):
     # Create test cleaners
     cleaners = [
         {
-            "username": "maria.cleaner",
-            "email": "maria@neatclean.com",
-            "password": make_password("cleanpass123"),
-            "first_name": "Maria",
+            "username": "ciara.cleaner",
+            "email": "Ciara@neatclean.com",
+            "password": make_password("test"),
+            "first_name": "Ciara",
             "last_name": "Silva",
             "phone": "+1234567890",
             "user_type": "staff",
@@ -26,7 +26,7 @@ def create_test_users(apps, schema_editor):
         {
             "username": "john.cleaner",
             "email": "john@neatclean.com",
-            "password": make_password("cleanpass123"),
+            "password": make_password("test"),
             "first_name": "John",
             "last_name": "Doe",
             "phone": "+1987654321",
@@ -45,7 +45,7 @@ def create_test_users(apps, schema_editor):
         {
             "username": "alice.client",
             "email": "alice@example.com",
-            "password": make_password("clientpass123"),
+            "password": make_password("test"),
             "first_name": "Alice",
             "last_name": "Johnson",
             "phone": "+1122334455",
@@ -59,7 +59,7 @@ def create_test_users(apps, schema_editor):
         {
             "username": "bob.client",
             "email": "bob@example.com",
-            "password": make_password("clientpass123"),
+            "password": make_password("test"),
             "first_name": "Bob",
             "last_name": "Smith",
             "phone": "+1555666777",

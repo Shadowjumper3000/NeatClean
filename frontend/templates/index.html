@@ -32,15 +32,15 @@
             <div id="staff-calendar">
                 <h3>Select Working Days</h3>
                 <div id="calendar-container">
-                    <input type="date" id="availability-date" multiple>
+                    <input type="text" id="availability-date" class="flatpickr" placeholder="Select dates...">
                 </div>
                 <div id="time-slots">
                     <h4>Working Hours</h4>
                     <div class="time-range">
                         <label for="start-time">Start Time:</label>
-                        <input type="time" id="start-time">
+                        <input type="text" id="start-time" class="flatpickr-time" placeholder="Select start time...">
                         <label for="end-time">End Time:</label>
-                        <input type="time" id="end-time">
+                        <input type="text" id="end-time" class="flatpickr-time" placeholder="Select end time...">
                     </div>
                     <button type="button" class="btn btn-primary" id="save-availability">
                         Save Availability
@@ -57,12 +57,14 @@
             <h2>Book a Cleaning Service</h2>
             <p>Select a date and time for your cleaning service.</p>
             <form id="availability-form">
-                <div id="calendar-container">
-                    <input type="date" id="date-picker">
-                </div>
-                <div id="time-container">
-                    <label for="time-picker">Select Time:</label>
-                    <input type="time" id="time-picker">
+                <div class="calendar-time-container">
+                    <div id="calendar-container">
+                        <input type="text" id="date-picker" class="flatpickr" placeholder="Select date...">
+                    </div>
+                    <div id="time-container">
+                        <label for="time-picker">Select Time:</label>
+                        <input type="text" id="time-picker" class="flatpickr-time" placeholder="Select time...">
+                    </div>
                 </div>
                 <button type="button" class="btn btn-primary" id="check-availability-button">
                     Check Availability
