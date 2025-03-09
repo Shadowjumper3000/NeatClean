@@ -56,7 +56,7 @@ services:
       db:
         condition: service_healthy
     deploy:
-      replicas: 0
+      replicas: 1
       update_config:
         parallelism: 1
         delay: 10s
