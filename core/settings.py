@@ -58,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -129,18 +130,17 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 
-STATIC_URL = '/static/'
-STATIC_ROOT = 'app/staticfiles'
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Changed from 'app/staticfiles'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend', 'static'),
-    os.path.join(BASE_DIR, 'frontend', 'static', 'images'),
-    os.path.join(BASE_DIR, 'frontend', 'static', 'css'),
-    os.path.join(BASE_DIR, 'frontend', 'src'),
+    os.path.join(BASE_DIR, "frontend", "static"),
+    os.path.join(BASE_DIR, "frontend", "src"),
 ]
 
 # Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = 'app/media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Changed from 'app/media'
 
 AUTH_USER_MODEL = "database.CustomUser"
 

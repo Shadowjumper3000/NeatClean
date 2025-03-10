@@ -50,9 +50,11 @@ services:
       - DJANGO_ALLOWED_HOSTS=${ALLOWED_HOSTS}
       - STATIC_ROOT=/app/staticfiles
       - STATIC_URL=/static/
+      - MEDIA_ROOT=/app/media
+      - MEDIA_URL=/media/
     volumes:
-      - media_files:/app/media:rw
       - static_files:/app/staticfiles:rw
+      - media_files:/app/media:rw
     networks:
       - network
     depends_on:

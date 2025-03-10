@@ -23,9 +23,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Create necessary directories with proper permissions
 RUN useradd -m appuser && \
-    mkdir -p /app/staticfiles /app/media && \
+    mkdir -p /app/staticfiles/img /app/staticfiles/css /app/staticfiles/js /app/media && \
     chown -R appuser:appuser /app && \
-    chmod -R 755 /app/staticfiles /app/media
+    chmod -R 775 /app/staticfiles
 
 # Install Python dependencies
 COPY requirements.txt .
@@ -33,6 +33,9 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 # Copy application code
 COPY --chown=appuser:appuser . .
+
+# Collect static files before switching user
+RUN python manage.py collectstatic --noinput
 
 # Switch to non-root user
 USER appuser
@@ -53,8 +56,6 @@ until nc -z -v -w30 $DB_HOST $DB_PORT; do\n\
 done;\n\
 echo "Running migrations...";\n\
 python manage.py migrate --noinput;\n\
-echo "Collecting static files...";\n\
-python manage.py collectstatic --noinput --clear;\n\
 echo "Starting Gunicorn...";\n\
 exec gunicorn core.wsgi:application \
     --bind 0.0.0.0:8000 \

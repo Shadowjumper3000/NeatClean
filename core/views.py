@@ -12,7 +12,6 @@ from django.db import models
 from django.utils import timezone
 
 
-@login_required
 def index(request):
     context = {}
     if request.user.user_type == "staff":
