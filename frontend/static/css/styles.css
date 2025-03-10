@@ -700,7 +700,8 @@ footer p {
     grid-template-columns: 1fr 1.5fr 1fr;
     gap: 20px;
     padding: 20px;
-    height: calc(100vh - 100px);
+    height: auto;  /* Changed from fixed height */
+    min-height: calc(100vh - 100px);
 }
 
 .dashboard-column {
@@ -823,4 +824,57 @@ footer p {
     gap: 10px;
     margin-top: 15px;
     justify-content: flex-end;
+}
+
+/* Add responsive breakpoint */
+@media screen and (max-width: 1024px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;  /* Stack columns */
+        height: auto;
+        padding: 10px;
+    }
+
+    .dashboard-column {
+        margin-bottom: 20px;
+        max-height: none;  /* Remove fixed height */
+    }
+
+    .booking-card {
+        margin-bottom: 15px;
+    }
+
+    .booking-actions {
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .time-range {
+        flex-direction: column;
+    }
+
+    .calendar-time-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* Additional mobile optimizations */
+@media screen and (max-width: 480px) {
+    .booking-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .booking-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-confirm,
+    .btn-cancel,
+    .btn-message {
+        width: 100%;
+    }
 }
