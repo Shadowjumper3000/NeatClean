@@ -30,6 +30,7 @@ from .views import (
     create_booking,
     get_user_profile,
     update_booking_status,
+    health_check,
 )
 
 urlpatterns = [
@@ -48,4 +49,5 @@ urlpatterns = [
         update_booking_status,
         name="update_booking_status",
     ),
+    path("health/", health_check, name="health_check"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

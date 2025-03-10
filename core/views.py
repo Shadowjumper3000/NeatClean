@@ -14,27 +14,28 @@ from django.utils import timezone
 
 def index(request):
     context = {}
-    if request.user.user_type == "staff":
-        pending_bookings = Booking.objects.filter(
-            staff=request.user, status="pending"
-        ).order_by("date", "time")
+    if request.user.is_authenticated:
+        if request.user.user_type == "staff":
+            pending_bookings = Booking.objects.filter(
+                staff=request.user, status="pending"
+            ).order_by("date", "time")
 
-        confirmed_bookings = Booking.objects.filter(
-            staff=request.user, status="confirmed", date__gte=timezone.now().date()
-        ).order_by("date", "time")
+            confirmed_bookings = Booking.objects.filter(
+                staff=request.user, status="confirmed", date__gte=timezone.now().date()
+            ).order_by("date", "time")
 
-        context.update(
-            {
-                "pending_bookings": pending_bookings,
-                "confirmed_bookings": confirmed_bookings,
-            }
-        )
-    else:
-        # Add bookings for customers
-        bookings = Booking.objects.filter(customer=request.user).order_by(
-            "-date", "-time"
-        )
-        context["bookings"] = bookings
+            context.update(
+                {
+                    "pending_bookings": pending_bookings,
+                    "confirmed_bookings": confirmed_bookings,
+                }
+            )
+        else:
+            # Add bookings for customers
+            bookings = Booking.objects.filter(customer=request.user).order_by(
+                "-date", "-time"
+            )
+            context["bookings"] = bookings
 
     return render(request, "index.html", context)
 
@@ -210,3 +211,8 @@ def update_booking_status(request, booking_id):
         )
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+@require_http_methods(["GET"])
+def health_check(request):
+    return JsonResponse({"status": "healthy"})
