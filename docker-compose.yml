@@ -68,7 +68,7 @@ services:
       restart_policy:
         condition: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/", "||", "exit", "1"]
+      test:  [ "CMD", "curl", "-f", "http://localhost:8000/health/" ]
       interval: 10s
       timeout: 5s
       retries: 3
