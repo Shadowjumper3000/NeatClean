@@ -225,7 +225,43 @@ def update_booking_status(request, booking_id):
 @csrf_exempt  # Allow requests without CSRF token
 @require_http_methods(["GET"])
 def health_check(request):
-    return JsonResponse({"status": "healthy"})
+    from django.db import connection
+
+    try:
+        # Test database connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+
+        # Test CSRF token generation
+        from django.middleware.csrf import get_token
+
+        get_token(request)
+
+        # Test static file handling
+        from django.contrib.staticfiles.finders import get_finder
+
+        finder = get_finder("django.contrib.staticfiles.finders.FileSystemFinder")
+        if not finder.find("css/styles.css"):
+            raise Exception("Static files not properly configured")
+
+        return JsonResponse(
+            {"status": "healthy", "database": "connected", "static_files": "configured"}
+        )
+    except Exception as e:
+        return JsonResponse(
+            {
+                "status": "unhealthy",
+                "error": str(e),
+                "database": (
+                    "not connected" if "cursor" not in locals() else "connected"
+                ),
+                "static_files": (
+                    "not configured" if "finder" not in locals() else "configured"
+                ),
+            },
+            status=500,
+        )
 
 
 def handler404(request, exception):

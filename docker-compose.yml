@@ -52,8 +52,6 @@ services:
       - STATIC_URL=/static/
       - MEDIA_ROOT=/app/media
       - MEDIA_URL=/media/
-      - PYTHONUNBUFFERED=1
-      - DJANGO_LOG_LEVEL=INFO
     volumes:
       - static_files:/app/staticfiles:rw
       - media_files:/app/media:rw
