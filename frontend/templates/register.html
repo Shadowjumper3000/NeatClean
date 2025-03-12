@@ -168,7 +168,7 @@ document.getElementById('profile_picture').addEventListener('change', function()
 function handleUserTypeChange(select) {
     const staffFields = document.querySelectorAll('.staff-only');
     const isStaff = select.value === 'staff';
-    
+
     staffFields.forEach(field => {
         field.style.display = isStaff ? 'block' : 'none';
     });
