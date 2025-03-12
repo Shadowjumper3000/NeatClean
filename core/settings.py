@@ -172,7 +172,9 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = False  # Change to False since we're behind a proxy
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
+    USE_X_FORWARDED_PORT = True
 
 # Add this for better error logging
 LOGGING = {
