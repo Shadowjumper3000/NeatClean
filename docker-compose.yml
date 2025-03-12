@@ -33,8 +33,8 @@ services:
 
   web:
     image: ${DOCKER_REGISTRY:-ghcr.io}/${GITHUB_REPOSITORY:-shadowjumper3000/neatclean}:${TAG:-latest}
+    pull-policy: build
     build:
-      pull-policy: build
       context: .
       dockerfile: Dockerfile
       args:
@@ -42,7 +42,7 @@ services:
     restart: always
     environment:
       - DEBUG=${DEBUG}
-      - SECRET_KEY=${SECRET_KEY}
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
