@@ -151,6 +151,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Changed from 'app/media'
 
 AUTH_USER_MODEL = "database.CustomUser"
 
+# Admin registration password
+ADMIN_REGISTRATION_PASSWORD = os.getenv("ADMIN_REGISTRATION_PASSWORD", "default_admin_password")
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

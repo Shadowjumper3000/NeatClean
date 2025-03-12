@@ -10,6 +10,7 @@ from database.models import Booking
 import json
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 
 def index(request):
@@ -72,6 +73,13 @@ def login_view(request):
 
 def register_view(request):
     if request.method == "POST":
+        admin_password = request.POST.get("admin_password")
+        if admin_password != settings.ADMIN_REGISTRATION_PASSWORD:
+            messages.error(
+                request, "Invalid admin password. Please contact an administrator."
+            )
+            return render(request, "register.html", {"error": "Invalid admin password"})
+
         form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
