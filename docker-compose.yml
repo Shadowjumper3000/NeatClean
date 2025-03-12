@@ -34,6 +34,7 @@ services:
   web:
     image: ${DOCKER_REGISTRY:-ghcr.io}/${GITHUB_REPOSITORY:-shadowjumper3000/neatclean}:${TAG:-latest}
     build:
+      pull-policy: build
       context: .
       dockerfile: Dockerfile
       args:
