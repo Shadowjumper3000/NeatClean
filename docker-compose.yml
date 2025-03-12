@@ -36,7 +36,7 @@ services:
     pull_policy: build
     environment:
       - DEBUG=${DEBUG}
-      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
