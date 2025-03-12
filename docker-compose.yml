@@ -13,7 +13,6 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - media_files:/app/media
     networks:
       - network
     healthcheck:
@@ -25,11 +24,6 @@ services:
       resources:
         limits:
           memory: 1G
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
   web:
     image: ${DOCKER_REGISTRY:-ghcr.io}/${GITHUB_REPOSITORY:-shadowjumper3000/neatclean}:${TAG:-latest}
@@ -72,11 +66,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
     ports:
       - "8000:8000"
 
