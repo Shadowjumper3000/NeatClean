@@ -1,86 +1,187 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Register - Entrepreneurship{% endblock %}
+{% block title %}Register - NeatClean{% endblock %}
 
 {% block content %}
-<h2>Register</h2>
-<form method="post">
-    {% csrf_token %}
-    <label for="user_type">Register as:</label>
-    <select id="user_type" name="user_type" required>
-        <option value="customer">Customer</option>
-        <option value="staff">Staff</option>
-    </select>
-    <br>
-    <label for="username">Username(Email):</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <label for="confirm_password">Confirm Password:</label>
-    <input type="password" id="confirm_password" name="confirm_password" required>
-    <br>
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city">
-    <br>
-    <label for="zip">Zip:</label>
-    <input type="text" id="zip" name="zip">
-    <br>
-    <label for="street">Street:</label>
-    <input type="text" id="street" name="street">
-    <br>
-    <label for="address">Address:</label>
-    <input type="text" id="address" name="address">
-    <br>
-    <label for="apartment_door_floor">Apartment/Door/Floor:</label>
-    <input type="text" id="apartment_door_floor" name="apartment_door_floor">
-    <br>
-    <label for="phone_number">Phone Number:</label>
-    <input type="text" id="phone_number" name="phone_number">
-    <br>
-    <label for="language">Language:</label>
-    <select id="language" name="language" multiple>
-        <!-- Options will be populated by JavaScript -->
-    </select>
-    <br>
-    <label for="rating">Rating:</label>
-    <input type="text" id="rating" name="rating" placeholder="Optional">
-    <br>
-    <label for="image_url">Image URL:</label>
-    <input type="text" id="image_url" name="image_url">
-    <br>
-    <button type="submit">Register</button>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-</form>
-<p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+<div class="form-container">
+    <h2 class="text-center">Register</h2>
+    <form method="post" class="registration-form" enctype="multipart/form-data">
+        {% csrf_token %}
 
+        <!-- Add debug information -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        {% if messages %}
+            <div class="alert alert-info">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-row">
+            <div class="form-group">
+                <div class="image-upload-wrapper">
+                    <input type="file"
+                           id="profile_picture"
+                           name="profile_picture"
+                           accept="image/*"
+                           class="image-upload"
+                           hidden>
+                    <div class="image-preview" id="imagePreview" onclick="document.getElementById('profile_picture').click()">
+                        <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="preview-img">
+                        <span class="preview-text">Click to select image</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="user_type">I am a:</label>
+                <select id="user_type" name="user_type" onchange="handleUserTypeChange(this)" required>
+                    <option value="customer">Customer</option>
+                    <option value="staff">Staff</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="password1">Password:</label>
+                <input type="password" id="password1" name="password1" required>
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password:</label>
+                <input type="password" id="password2" name="password2" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="street">Street:</label>
+                <input type="text" id="street" name="street" autocomplete="address-line1">
+            </div>
+            <div class="form-group">
+                <label for="street_number">Street Number:</label>
+                <input type="text" id="street_number" name="street_number">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="apartment">Apartment:</label>
+                <input type="text" id="apartment" name="apartment" autocomplete="address-line2">
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" autocomplete="address-level2">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" autocomplete="address-level1">
+            </div>
+            <div class="form-group">
+                <label for="zip_code">ZIP Code:</label>
+                <input type="text" id="zip_code" name="zip_code" autocomplete="postal-code">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" autocomplete="country" value="United States">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="admin_password">Admin Password:</label>
+                <input type="password" id="admin_password" name="admin_password" required>
+                <small class="form-text text-muted">Please contact an administrator for this password.</small>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="submit-btn">Register</button>
+        </div>
+    </form>
+    <p class="text-center">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
 <script>
-    document.getElementById('user_type').addEventListener('change', function() {
-        var userType = this.value;
-        if (userType === 'customer') {
-            document.getElementById('customer_fields').style.display = 'block';
-            document.getElementById('staff_fields').style.display = 'none';
-        } else if (userType === 'staff') {
-            document.getElementById('customer_fields').style.display = 'none';
-            document.getElementById('staff_fields').style.display = 'block';
-        }
-    });
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = preview.querySelector('.preview-img');
+    const previewText = preview.querySelector('.preview-text');
 
-    // Fetch languages and populate the dropdown list
-    fetch('/get-languages/')
-        .then(response => response.json())
-        .then(data => {
-            const select = document.getElementById('language');
-            data.forEach(language => {
-                const option = document.createElement('option');
-                option.value = language;
-                option.textContent = language;
-                select.appendChild(option);
-            });
-        })
-        .catch(error => console.error('Error fetching languages:', error));
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            previewImg.style.display = 'block';
+            previewImg.src = e.target.result;
+            previewText.style.display = 'none';
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+document.getElementById('profile_picture').addEventListener('change', function() {
+    previewImage(this);
+});
+
+function handleUserTypeChange(select) {
+    const staffFields = document.querySelectorAll('.staff-only');
+    const isStaff = select.value === 'staff';
+
+    staffFields.forEach(field => {
+        field.style.display = isStaff ? 'block' : 'none';
+    });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    handleUserTypeChange(document.getElementById('user_type'));
+});
 </script>
 {% endblock %}

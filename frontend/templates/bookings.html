@@ -1,9 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}Bookings - Entrepreneurship{% endblock %}
+{% block title %}Bookings - NeatClean{% endblock %}
 
 {% block content %}
-<h2>Bookings</h2>
-<p>Here you can view and manage your bookings.</p>
-<!-- Add more content as needed -->
+<div class="main-content">
+    <h2>Your Bookings</h2>
+    {% if bookings %}
+        <div class="bookings-list">
+            {% for booking in bookings %}
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <h3>Booking #{{ booking.id }}</h3>
+                        <span class="status {{ booking.status }}">{{ booking.status|title }}</span>
+                    </div>
+                    <div class="booking-details">
+                        {% if user.user_type == 'customer' %}
+                            <p>Staff: {{ booking.staff.get_full_name }}</p>
+                        {% else %}
+                            <p>Customer: {{ booking.customer.get_full_name }}</p>
+                        {% endif %}
+                        <p>Date: {{ booking.date }}</p>
+                        <p>Time: {{ booking.time }}</p>
+                        <p>Address: {{ booking.address }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No bookings found.</p>
+    {% endif %}
+</div>
 {% endblock %}
