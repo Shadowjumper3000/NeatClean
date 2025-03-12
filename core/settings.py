@@ -17,9 +17,6 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-bm+yo)h0ry9ftft*xe5x07@i8f3acria33zxam9#skaj+k(+bi"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", False))
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS]  # Clean whitespace
@@ -152,9 +149,28 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Changed from 'app/media'
 AUTH_USER_MODEL = "database.CustomUser"
 
 # Admin registration password
-ADMIN_REGISTRATION_PASSWORD = os.getenv("ADMIN_REGISTRATION_PASSWORD", "default_admin_password")
+ADMIN_REGISTRATION_PASSWORD = os.getenv(
+    "ADMIN_REGISTRATION_PASSWORD", "default_admin_password"
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Add CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    "https://neatclean.shadowlabs.cc",
+    "https://www.neatclean.shadowlabs.cc",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://192.168.1.70:8000",
+]
+
+# Security settings for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
