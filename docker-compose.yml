@@ -47,6 +47,7 @@ services:
       - STATIC_URL=/static/
       - MEDIA_ROOT=/app/media
       - MEDIA_URL=/media/
+      - ADMIN_REGISTRATION_PASSWORD=${ADMIN_REGISTRATION_PASSWORD}
     volumes:
       - static_files:/app/staticfiles:rw
       - media_files:/app/media:rw
