@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     netcat-traditional \
     python3-dev \
+    pkg-config \
     curl \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
@@ -23,7 +24,8 @@ RUN useradd -m appuser && \
     chmod -R 755 /app/staticfiles /app/media
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt gunicorn
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt gunicorn
 
 COPY --chown=appuser:appuser . .
 

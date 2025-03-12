@@ -33,6 +33,7 @@ services:
       args:
         - BUILDKIT_INLINE_CACHE=1
     restart: always
+    pull_policy: build
     environment:
       - DEBUG=${DEBUG}
       - SECRET_KEY=${DJANGO_SECRET_KEY}
