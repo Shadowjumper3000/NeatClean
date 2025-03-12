@@ -216,3 +216,11 @@ def update_booking_status(request, booking_id):
 @require_http_methods(["GET"])
 def health_check(request):
     return JsonResponse({"status": "healthy"})
+
+
+def handler404(request, exception):
+    return render(request, "404.html", status=404)
+
+
+def handler500(request):
+    return render(request, "500.html", status=500)

@@ -35,7 +35,9 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn
 COPY --chown=appuser:appuser . .
 
 # Collect static files before switching user
+USER root
 RUN python manage.py collectstatic --noinput
+USER appuser
 
 # Switch to non-root user
 USER appuser
