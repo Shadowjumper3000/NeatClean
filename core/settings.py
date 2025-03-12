@@ -132,7 +132,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "data", "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "frontend", "static"),
@@ -147,14 +147,12 @@ if DEBUG:
 
 # Media files
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "data", "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Changed from 'app/media'
 
 AUTH_USER_MODEL = "database.CustomUser"
 
 # Admin registration password
-ADMIN_REGISTRATION_PASSWORD = os.getenv(
-    "ADMIN_REGISTRATION_PASSWORD", "default_admin_password"
-)
+ADMIN_REGISTRATION_PASSWORD = os.getenv("ADMIN_REGISTRATION_PASSWORD", "default_admin_password")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
