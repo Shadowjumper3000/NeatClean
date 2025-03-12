@@ -8,12 +8,17 @@
     <h2 class="text-center">Register</h2>
     <form method="post" class="registration-form" enctype="multipart/form-data">
         {% csrf_token %}
+
+        <!-- Add debug information -->
         {% if form.errors %}
             <div class="alert alert-danger">
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
+                {{ form.errors }}
+            </div>
+        {% endif %}
+        {% if messages %}
+            <div class="alert alert-info">
+                {% for message in messages %}
+                    {{ message }}
                 {% endfor %}
             </div>
         {% endif %}
@@ -126,6 +131,14 @@
         </div>
 
         <div class="form-row">
+            <div class="form-group">
+                <label for="admin_password">Admin Password:</label>
+                <input type="password" id="admin_password" name="admin_password" required>
+                <small class="form-text text-muted">Please contact an administrator for this password.</small>
+            </div>
+        </div>
+
+        <div class="form-row">
             <button type="submit" class="submit-btn">Register</button>
         </div>
     </form>
@@ -160,7 +173,7 @@ document.getElementById('profile_picture').addEventListener('change', function()
 function handleUserTypeChange(select) {
     const staffFields = document.querySelectorAll('.staff-only');
     const isStaff = select.value === 'staff';
-    
+
     staffFields.forEach(field => {
         field.style.display = isStaff ? 'block' : 'none';
     });

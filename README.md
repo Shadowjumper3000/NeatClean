@@ -59,11 +59,12 @@ To set up a Python virtual environment and install the required packages from `r
      ```env
      SECRET_KEY=your_secret_key
      DEBUG=True
-     DB_NAME=entrepreneurship
+     DB_NAME=neatclean
      DB_USER=your_mysql_username
      DB_PASSWORD=your_mysql_password
      DB_HOST=localhost
      DB_PORT=3306
+     ADMIN_REGISTRATION_PASSWORD=your_secure_admin_password
      ```
 
 6. **Run migrations**:

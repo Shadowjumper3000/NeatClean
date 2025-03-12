@@ -10,32 +10,34 @@ from database.models import Booking
 import json
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 
-@login_required
 def index(request):
     context = {}
-    if request.user.user_type == "staff":
-        pending_bookings = Booking.objects.filter(
-            staff=request.user, status="pending"
-        ).order_by("date", "time")
+    if request.user.is_authenticated:
+        if request.user.user_type == "staff":
+            pending_bookings = Booking.objects.filter(
+                staff=request.user, status="pending"
+            ).order_by("date", "time")
 
-        confirmed_bookings = Booking.objects.filter(
-            staff=request.user, status="confirmed", date__gte=timezone.now().date()
-        ).order_by("date", "time")
+            confirmed_bookings = Booking.objects.filter(
+                staff=request.user, status="confirmed", date__gte=timezone.now().date()
+            ).order_by("date", "time")
 
-        context.update(
-            {
-                "pending_bookings": pending_bookings,
-                "confirmed_bookings": confirmed_bookings,
-            }
-        )
-    else:
-        # Add bookings for customers
-        bookings = Booking.objects.filter(customer=request.user).order_by(
-            "-date", "-time"
-        )
-        context["bookings"] = bookings
+            context.update(
+                {
+                    "pending_bookings": pending_bookings,
+                    "confirmed_bookings": confirmed_bookings,
+                }
+            )
+        else:
+            # Add bookings for customers
+            bookings = Booking.objects.filter(customer=request.user).order_by(
+                "-date", "-time"
+            )
+            context["bookings"] = bookings
 
     return render(request, "index.html", context)
 
@@ -72,6 +74,13 @@ def login_view(request):
 
 def register_view(request):
     if request.method == "POST":
+        admin_password = request.POST.get("admin_password")
+        if admin_password != settings.ADMIN_REGISTRATION_PASSWORD:
+            messages.error(
+                request, "Invalid admin password. Please contact an administrator."
+            )
+            return render(request, "register.html", {"error": "Invalid admin password"})
+
         form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
@@ -211,3 +220,64 @@ def update_booking_status(request, booking_id):
         )
     except Exception as e:
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
+
+
+@csrf_exempt  # Allow requests without CSRF token
+@require_http_methods(["GET"])
+def health_check(request):
+    from django.db import connection
+
+    try:
+        # Test database connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+
+        # Test CSRF token generation
+        from django.middleware.csrf import get_token
+
+        get_token(request)
+
+        # Test static file handling
+        from django.contrib.staticfiles.finders import get_finder
+
+        finder = get_finder("django.contrib.staticfiles.finders.FileSystemFinder")
+        if not finder.find("css/styles.css"):
+            raise Exception("Static files not properly configured")
+
+        return JsonResponse(
+            {"status": "healthy", "database": "connected", "static_files": "configured"}
+        )
+    except Exception as e:
+        return JsonResponse(
+            {
+                "status": "unhealthy",
+                "error": str(e),
+                "database": (
+                    "not connected" if "cursor" not in locals() else "connected"
+                ),
+                "static_files": (
+                    "not configured" if "finder" not in locals() else "configured"
+                ),
+            },
+            status=500,
+        )
+
+
+def handler404(request, exception):
+    return render(request, "404.html", status=404)
+
+
+def handler500(request):
+    return render(request, "500.html", status=500)
+
+
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        user = request.user
+        logout(request)
+        user.delete()
+        messages.success(request, "Your account has been successfully deleted.")
+        return redirect("index")
+    return redirect("account")

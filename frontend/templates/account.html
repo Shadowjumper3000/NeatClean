@@ -16,6 +16,7 @@
             </div>
         {% endif %}
 
+        <!-- Profile Picture Section -->
         <div class="form-row">
             <div class="form-group">
                 <div class="image-upload-wrapper">
@@ -24,14 +25,15 @@
                            name="profile_picture"
                            accept="image/*"
                            class="image-upload"
+                           onchange="previewImage(this)"
                            hidden>
                     <div class="image-preview" id="imagePreview" onclick="document.getElementById('profile_picture').click()">
                         {% if user.picture %}
-                            <img src="{{ user.picture.url }}" alt="Profile" class="preview-img" style="display: block;">
+                            <img src="{{ user.picture.url }}" alt="Profile" class="preview-img">
                         {% else %}
                             <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="preview-img">
                         {% endif %}
-                        <span class="preview-text" {% if user.picture %}style="display: none;{% endif %}">
+                        <span class="preview-text" {% if user.picture %}style="display: none;"{% endif %}>
                             Click to select image
                         </span>
                     </div>
@@ -128,10 +130,19 @@
         </div>
     </form>
 
+    <!-- Logout Form -->
     <div class="form-row mt-4">
         <form method="post" action="{% url 'logout' %}" class="w-100">
             {% csrf_token %}
             <button type="submit" class="submit-btn btn-danger">Logout</button>
+        </form>
+    </div>
+
+    <!-- Delete Account Form -->
+    <div class="form-row mt-4">
+        <form method="post" action="{% url 'delete_account' %}" class="w-100" onsubmit="return confirmDelete()">
+            {% csrf_token %}
+            <button type="submit" class="submit-btn btn-danger">Delete Account</button>
         </form>
     </div>
 </div>
@@ -146,13 +157,11 @@ function previewImage(input) {
 
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-
         reader.onload = function(e) {
             previewImg.style.display = 'block';
             previewImg.src = e.target.result;
             previewText.style.display = 'none';
         }
-
         reader.readAsDataURL(input.files[0]);
     } else {
         previewImg.src = '{% static "img/default-profile.png" %}';
@@ -160,14 +169,8 @@ function previewImage(input) {
     }
 }
 
-// Add event listener for file input changes
-document.addEventListener('DOMContentLoaded', function() {
-    const profileInput = document.getElementById('profile_picture');
-    if (profileInput) {
-        profileInput.addEventListener('change', function() {
-            previewImage(this);
-        });
-    }
-});
+function confirmDelete() {
+    return confirm("Are you sure you want to delete your account? This action cannot be undone.");
+}
 </script>
 {% endblock %}
