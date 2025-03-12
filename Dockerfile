@@ -23,9 +23,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Create necessary directories with proper permissions
 RUN useradd -m appuser && \
-    mkdir -p /app/staticfiles/img /app/staticfiles/css /app/staticfiles/js /app/media && \
+    mkdir -p /app/data/static /app/data/media && \
     chown -R appuser:appuser /app && \
-    chmod -R 777 /app/staticfiles /app/media
+    chmod -R 755 /app/data
 
 # Install Python dependencies
 COPY requirements.txt .

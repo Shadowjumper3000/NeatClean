@@ -1,7 +1,5 @@
 name: neatclean
 
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
@@ -12,8 +10,7 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
-      - media_files:/app/media
+      - app_data:/var/lib/mysql # Changed to use unified volume
     networks:
       - network
     healthcheck:
@@ -48,13 +45,12 @@ services:
       - DB_HOST=db
       - DB_PORT=3306
       - DJANGO_ALLOWED_HOSTS=${ALLOWED_HOSTS}
-      - STATIC_ROOT=/app/staticfiles
+      - STATIC_ROOT=/app/data/static
       - STATIC_URL=/static/
-      - MEDIA_ROOT=/app/media
+      - MEDIA_ROOT=/app/data/media
       - MEDIA_URL=/media/
     volumes:
-      - static_files:/app/staticfiles:rw
-      - media_files:/app/media:rw
+      - app_data:/app/data # Unified volume for static and media
     networks:
       - network
     depends_on:
@@ -85,9 +81,6 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:
-    driver: local
-  media_files:
-    driver: local
-  static_files:
+  app_data:
+    # Single volume for all persistent data
     driver: local
