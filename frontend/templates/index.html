@@ -190,10 +190,17 @@
 {% endif %}
 {% endblock %}
 
+{% block extra_css %}
+    {% if not user.is_authenticated or user.user_type == 'customer' %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    {% endif %}
+{% endblock %}
+
 {% block extra_js %}
-    {% if user.user_type == 'staff' %}
-        <script src="{% static 'staff.js' %}" defer></script>
-    {% else %}
+    {% if not user.is_authenticated or user.user_type == 'customer' %}
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="{% static 'calendar.js' %}" defer></script>
+    {% else %}
+        <script src="{% static 'staff.js' %}" defer></script>
     {% endif %}
 {% endblock %}

@@ -144,7 +144,7 @@ if DEBUG:
 
 # Media files
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")  # Changed from 'app/media'
+MEDIA_ROOT = os.getenv("MEDIA_ROOT", "/app/media")  # Default to Docker path
 
 AUTH_USER_MODEL = "database.CustomUser"
 
@@ -180,29 +180,29 @@ if not DEBUG:
     SESSION_COOKIE_SAMESITE = "Lax"
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+    "version": 1,
+    "disable_existing_loggers": True,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'NOTSET',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+    "handlers": {
+        "console": {
+            "level": "NOTSET",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         }
     },
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'NOTSET',
+    "loggers": {
+        "": {
+            "handlers": ["console"],
+            "level": "NOTSET",
         },
-        'django.request': {
-            'handlers': ['console'],
-            'propagate': False,
-            'level': 'ERROR'
-        }
-    }
+        "django.request": {
+            "handlers": ["console"],
+            "propagate": False,
+            "level": "ERROR",
+        },
+    },
 }

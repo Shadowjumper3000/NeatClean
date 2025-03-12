@@ -107,6 +107,20 @@ def logout_view(request):
 @login_required
 def account(request):
     if request.method == "POST":
+        if request.FILES.get("profile_picture"):
+            file = request.FILES["profile_picture"]
+
+            # Validate file type
+            if not file.content_type.startswith("image/"):
+                messages.error(request, "Invalid file type. Please upload an image.")
+                return redirect("account")
+
+            # Delete old picture if it exists
+            if request.user.picture:
+                request.user.picture.delete(save=False)
+
+            request.user.picture = file
+
         user = request.user
         # Update user information
         user.first_name = request.POST.get("first_name")

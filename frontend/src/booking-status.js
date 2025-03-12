@@ -1,5 +1,4 @@
 function updateBookingStatus(bookingId, status) {
-    console.log('Updating booking:', bookingId, 'to status:', status);
 
     // Get CSRF token
     const csrftoken = getCookie('csrftoken');
@@ -19,7 +18,6 @@ function updateBookingStatus(bookingId, status) {
         return response.json();
     })
     .then(data => {
-        console.log('Booking updated successfully:', data);
         // Reload the page to show updated status
         window.location.reload();
     })
