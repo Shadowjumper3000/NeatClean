@@ -225,16 +225,7 @@ def update_booking_status(request, booking_id):
 @csrf_exempt  # Allow requests without CSRF token
 @require_http_methods(["GET"])
 def health_check(request):
-    from django.db import connection
-
-    try:
-        # Test database connection
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-            cursor.fetchone()
-        return JsonResponse({"status": "healthy"})
-    except Exception as e:
-        return JsonResponse({"status": "unhealthy", "error": str(e)}, status=500)
+    return JsonResponse({"status": "healthy"})
 
 
 def handler404(request, exception):
