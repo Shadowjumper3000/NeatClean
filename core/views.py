@@ -232,3 +232,14 @@ def handler404(request, exception):
 
 def handler500(request):
     return render(request, "500.html", status=500)
+
+
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        user = request.user
+        logout(request)
+        user.delete()
+        messages.success(request, "Your account has been successfully deleted.")
+        return redirect("index")
+    return redirect("account")

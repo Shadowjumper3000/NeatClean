@@ -31,7 +31,7 @@
                         {% else %}
                             <img src="{% static 'img/default-profile.png' %}" alt="Default Profile" class="preview-img">
                         {% endif %}
-                        <span class="preview-text" {% if user.picture %}style="display: none;{% endif %}">
+                        <span class="preview-text" {% if user.picture %}style="display: none;{% endif %}>
                             Click to select image
                         </span>
                     </div>
@@ -134,8 +134,14 @@
             <button type="submit" class="submit-btn btn-danger">Logout</button>
         </form>
     </div>
+
+    <div class="form-row mt-4">
+        <form method="post" action="{% url 'delete_account' %}" class="w-100" onsubmit="return confirmDelete()">
+            {% csrf_token %}
+            <button type="submit" class="submit-btn btn-danger">Delete Account</button>
+        </form>
+    </div>
 </div>
-{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -169,5 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function confirmDelete() {
+    return confirm("Are you sure you want to delete your account? This action cannot be undone.");
+}
 </script>
 {% endblock %}

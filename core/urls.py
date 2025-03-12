@@ -31,6 +31,7 @@ from .views import (
     get_user_profile,
     update_booking_status,
     health_check,
+    delete_account,
 )
 
 urlpatterns = (
@@ -51,6 +52,7 @@ urlpatterns = (
             name="update_booking_status",
         ),
         path("health/", health_check, name="health_check"),
+        path("account/delete/", delete_account, name="delete_account"),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
