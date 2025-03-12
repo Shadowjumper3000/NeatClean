@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
             firstDayOfWeek: 1
         },
         onChange: function(selectedDates, dateStr) {
-            console.log('Selected dates:', dateStr);
         }
     });
 

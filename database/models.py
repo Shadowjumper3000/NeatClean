@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 import os
-from django.core.exceptions import ValidationError
-import magic
 
 
 def user_directory_path(instance, filename):
@@ -10,15 +8,6 @@ def user_directory_path(instance, filename):
     ext = filename.split(".")[-1]
     # Path will be: profile_pictures/customer/1.png or profile_pictures/staff/1.png
     return f"profile_pictures/{instance.user_type}/{instance.id}.{ext}"
-
-
-def validate_image_file(value):
-
-    valid_types = ["image/jpeg", "image/png", "image/gif"]
-    file_type = magic.from_buffer(value.read(1024), mime=True)
-    if file_type not in valid_types:
-        raise ValidationError("Unsupported file type.")
-    value.seek(0)
 
 
 class Language(models.Model):
@@ -44,7 +33,6 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True,
         help_text="User's profile picture",
-        validators=[validate_image_file],
     )
     user_type = models.CharField(
         max_length=20,

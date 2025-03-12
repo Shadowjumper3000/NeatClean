@@ -7,9 +7,10 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <link rel="icon" href="{% static 'img/banner.png' %}" type="image/webp"> <!-- Add this line for favicon -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <!-- Scripts - Load in correct order -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    {% block extra_css %}{% endblock %}  <!-- Move flatpickr CSS here -->
+
+    <!-- Core Scripts -->
     <script src="{% static 'auth.js' %}" defer></script>
     <script src="{% static 'booking.js' %}" defer></script>
     <script src="{% static 'booking-status.js' %}" defer></script>
