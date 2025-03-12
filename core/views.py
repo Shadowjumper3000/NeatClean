@@ -11,6 +11,7 @@ import json
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -221,9 +222,19 @@ def update_booking_status(request, booking_id):
         return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
 
+@csrf_exempt  # Allow requests without CSRF token
 @require_http_methods(["GET"])
 def health_check(request):
-    return JsonResponse({"status": "healthy"})
+    from django.db import connection
+
+    try:
+        # Test database connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone()
+        return JsonResponse({"status": "healthy"})
+    except Exception as e:
+        return JsonResponse({"status": "unhealthy", "error": str(e)}, status=500)
 
 
 def handler404(request, exception):
