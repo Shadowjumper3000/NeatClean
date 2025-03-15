@@ -64,12 +64,12 @@ services:
       restart_policy:
         condition: on-failure
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8000/health/" ]
+      test: [ "CMD", "curl", "-f", "http://127.0.0.1:8000/health/" ]
       interval: 10s
       timeout: 5s
       retries: 3
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
 
 networks:
   network:
